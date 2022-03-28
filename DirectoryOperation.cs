@@ -18,40 +18,70 @@
             while (true);
         }
 
-        internal static string[,] GetBiggestFiles(string directory)
+        internal static List<DTOFileInfo> GetAllFiles(string directory)
         {
-            string [] listOfFiles = Directory.GetFiles(directory);
-            int amountOfFiles = listOfFiles.Length;
-            var listOfFilesAndSizes = new (string, long)[amountOfFiles] ; 
-            for (int i=0; i< amountOfFiles; i++)
+            var answer = new List<DTOFileInfo>();
+            var allSubdirectories = Directory.GetDirectories(directory);
+            
+            if (allSubdirectories.Length != 0)
             {
-                listOfFilesAndSizes[i] = (listOfFiles[i], new FileInfo(listOfFiles[i]).Length);
-            }
-
-            bool gotRelocateThisTurn;
-            do
-            {
-                gotRelocateThisTurn = false;
-                for (int i = 0; i < amountOfFiles - 1; i++)
+                foreach (var subdirectory in allSubdirectories)
                 {
-                    if (listOfFilesAndSizes[i].Item2 < listOfFilesAndSizes[i + 1].Item2)
+                    try
                     {
-                        (string, long) tmp = listOfFilesAndSizes[i];
-                        listOfFilesAndSizes[i] = listOfFilesAndSizes[i + 1];
-                        listOfFilesAndSizes[i + 1] = tmp;
-                        gotRelocateThisTurn = true;
+                        answer.AddRange(GetAllFiles(subdirectory));
+                    }
+                    catch
+                    {
                     }
                 }
             }
-            while (gotRelocateThisTurn == true);
-
-            var answer = new string[11, 2];
-            answer[0, 0] = "file name";
-            answer[0, 1] = "file size (Kb)";
-            for (int i = 0; i < amountOfFiles && i < 10; i++) //10 is maximal amount of files to show according to task
+            var directoryInfo = new DirectoryInfo(directory);
+            FileInfo[] files = directoryInfo.GetFiles();
+            foreach (var file in files)
             {
-                answer[i+1, 0] = Path.GetFileNameWithoutExtension(listOfFilesAndSizes[i].Item1);
-                answer[i+1, 1] = listOfFilesAndSizes[i].Item2.ToString();
+                answer.Add(new DTOFileInfo(file));
+            }
+
+            return answer;
+        }
+
+        internal static string[,] GetBiggestFiles(List<DTOFileInfo> incomingFiles)
+        {
+            var amountOfFiles = incomingFiles.Count();
+            var sampleSize = 10; //according to task
+            var amountOfColumns = 2;
+
+            long smallestSizeInSample = 0;
+            var tenBiggestFiles = new DTOFileInfo[sampleSize];
+            foreach (var file in incomingFiles)
+            {
+                var currentFileSize = file.size;
+                if (currentFileSize > smallestSizeInSample)
+                {
+                    smallestSizeInSample = Math.Min(currentFileSize, tenBiggestFiles[8].size);
+                    tenBiggestFiles[9] = file;
+
+                    for (int i = 9; i > 1; i--)
+                    {
+                        if (tenBiggestFiles[i] < tenBiggestFiles[i-1])
+                        {
+                            new DTOF
+                        }
+                    }
+                }
+
+
+
+            }
+
+            var answer = new string[sampleSize+1, amountOfColumns];
+            answer[0, 0] = "file name"; //header of output table
+            answer[0, 1] = "file size";
+            for (int i = 0; i < amountOfFiles && i < 10; i++)
+            {
+                answer[i+1, 0] = Path.GetFileNameWithoutExtension(listOfFilesAndSizes[i].Item1); 
+                answer[i+1, 1] = listOfFilesAndSizes[i].Item2.ToString(); // (1+...)shift for headder
             }
             
             return answer;
@@ -152,5 +182,7 @@
             }
             return answer;
         }
+
+        
     }
 }
