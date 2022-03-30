@@ -77,32 +77,28 @@ namespace DirectoryAnalyzer
             answer[0, 1] = "file size";
             for (int i = 0; i < answerSize; i++)
             {
-                answer[i+1, 0] = Path.GetFileNameWithoutExtension(tenBiggestFiles[i].name);
+                answer[i+1, 0] = tenBiggestFiles[i].name;
                 var currentItemSize = tenBiggestFiles[i].size;
 
-                var teraByte = 1099511627776;
-                if (currentItemSize > teraByte)
+                switch (currentItemSize)
                 {
-                    answer[i + 1, 1] = (currentItemSize/teraByte).ToString() + " Tb"; // (1+...)shift for headder
-                }
-                var gigaByte = 1073741824;
-                if (currentItemSize > gigaByte)
-                {
-                    answer[i + 1, 1] = (currentItemSize / gigaByte).ToString() + " Gb";
-                }
-                var megaByte = 1048576;
-                if (currentItemSize > megaByte)
-                {
-                    answer[i + 1, 1] = (currentItemSize / megaByte).ToString() + " Mb";
-                }
-                var kiloByte = 1024;
-                if (currentItemSize > kiloByte)
-                {
-                    answer[i + 1, 1] = (currentItemSize / kiloByte).ToString() + " Kb";
-                }
-                else
-                {
-                    answer[i + 1, 1] = (currentItemSize).ToString() + " bytes";
+                    case > 1099511627776: //terabyte size 
+                        answer[i + 1, 1] = (currentItemSize / 1099511627776).ToString() + " Tb";
+                        break;
+                    case > 1073741824: //gigabyte size 
+                        answer[i + 1, 1] = (currentItemSize / 1073741824).ToString() + " Gb";
+                        break;
+                    case > 1048576: //megabyte size 
+                        answer[i + 1, 1] = (currentItemSize / 1048576).ToString() + " Kb";
+                        break;
+                    case > 1024: //kilobyte size 
+                        answer[i + 1, 1] = (currentItemSize / 1048576).ToString() + " Kb";
+                        break;
+
+                    default:
+                        answer[i + 1, 1] = (currentItemSize).ToString() + " bytes";// (1+...)shift for headder
+                        break;
+
                 }
             }
             return answer;

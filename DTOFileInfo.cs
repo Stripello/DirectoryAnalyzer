@@ -10,7 +10,7 @@ internal class DTOFileInfo
     {
         name = incomingFileInfo.FullName;
         extension = incomingFileInfo.Extension;
-        size = incomingFileInfo.Length / 1024;
+        size = incomingFileInfo.Length;
         changedate = incomingFileInfo.LastWriteTime;
     }
     public DTOFileInfo()
