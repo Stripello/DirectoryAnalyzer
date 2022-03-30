@@ -21,9 +21,9 @@ foreach (var tableElement in TableOperator.BuildTable(frequentExtensons))
     Console.WriteLine(tableElement);
 }
 */
-var directory = @"E:\";
+var directory = @"E:\games\BOA";
 var files = DirectoryOperation.GetAllFiles(directory);
-var table = TableOperator.BuildTable(files.ToArray());
+var table = TableOperator.BuildTable(DirectoryOperation.GetBiggestFiles(files));
 
 foreach (var element in table)
 {

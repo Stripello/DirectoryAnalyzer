@@ -1,4 +1,6 @@
-﻿namespace DirectoryAnalyzer
+﻿using System.Linq;
+
+namespace DirectoryAnalyzer
 {
     internal static class DirectoryOperation
     {
@@ -48,42 +50,58 @@
 
         internal static string[,] GetBiggestFiles(List<DTOFileInfo> incomingFiles)
         {
-            var amountOfFiles = incomingFiles.Count();
-            var sampleSize = 10; //according to task
-            var amountOfColumns = 2;
-
+            var maxSampleSize = 10; //according to task
+            var answerSize = Math.Min(incomingFiles.Count, maxSampleSize);
+            
+            var tenBiggestFiles = new DTOFileInfo[answerSize];
             long smallestSizeInSample = 0;
-            var tenBiggestFiles = new DTOFileInfo[sampleSize];
+            int smallestItemID = 0;
             foreach (var file in incomingFiles)
             {
                 var currentFileSize = file.size;
                 if (currentFileSize > smallestSizeInSample)
                 {
-                    smallestSizeInSample = Math.Min(currentFileSize, tenBiggestFiles[8].size);
-                    tenBiggestFiles[9] = file;
-
-                    for (int i = 9; i > 1; i--)
-                    {
-                        if (tenBiggestFiles[i] < tenBiggestFiles[i-1])
-                        {
-                            new DTOF
-                        }
-                    }
+                    tenBiggestFiles[smallestItemID] = file;
+                    smallestSizeInSample = tenBiggestFiles.Min(x => x.size);
+                    var smallestItem = tenBiggestFiles.Last(x => x.size == smallestSizeInSample);
+                    smallestItemID = Array.LastIndexOf(tenBiggestFiles, smallestItem);
                 }
-
-
-
             }
 
-            var answer = new string[sampleSize+1, amountOfColumns];
+            var amountOfColumns = 2;
+            var answer = new string[answerSize , amountOfColumns];
             answer[0, 0] = "file name"; //header of output table
             answer[0, 1] = "file size";
-            for (int i = 0; i < amountOfFiles && i < 10; i++)
+            for (int i = 0; i < answerSize; i++)
             {
-                answer[i+1, 0] = Path.GetFileNameWithoutExtension(listOfFilesAndSizes[i].Item1); 
-                answer[i+1, 1] = listOfFilesAndSizes[i].Item2.ToString(); // (1+...)shift for headder
+                answer[i+1, 0] = Path.GetFileNameWithoutExtension(tenBiggestFiles[i].name);
+                var currentItemSize = tenBiggestFiles[i].size;
+
+                var teraByte = 1099511627776;
+                if (currentItemSize > teraByte)
+                {
+                    answer[i + 1, 1] = (currentItemSize/teraByte).ToString() + " Tb"; // (1+...)shift for headder
+                }
+                var gigaByte = 1073741824;
+                if (currentItemSize > gigaByte)
+                {
+                    answer[i + 1, 1] = (currentItemSize / gigaByte).ToString() + " Gb";
+                }
+                var megaByte = 1048576;
+                if (currentItemSize > megaByte)
+                {
+                    answer[i + 1, 1] = (currentItemSize / megaByte).ToString() + " Mb";
+                }
+                var kiloByte = 1024;
+                if (currentItemSize > kiloByte)
+                {
+                    answer[i + 1, 1] = (currentItemSize / kiloByte).ToString() + " Kb";
+                }
+                else
+                {
+                    answer[i + 1, 1] = (currentItemSize).ToString() + " bytes";
+                }
             }
-            
             return answer;
         }
 
