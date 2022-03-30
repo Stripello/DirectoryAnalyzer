@@ -23,7 +23,7 @@ foreach (var tableElement in TableOperator.BuildTable(frequentExtensons))
 */
 var directory = @"D:\games\Sonora";
 var files = DirectoryOperation.GetAllFiles(directory);
-var table = TableOperator.BuildTable(DirectoryOperation.GetBiggestFiles(files));
+var table = TableOperator.BuildTable(DirectoryOperation.GetFrequentExtension(files));
 
 foreach (var element in table)
 {

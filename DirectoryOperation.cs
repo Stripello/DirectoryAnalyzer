@@ -114,70 +114,42 @@ namespace DirectoryAnalyzer
             var answerSize = Math.Min(incomingFiles.Count, maxSampleSize);
 
             var tenOldestFiles = Enumerable.Repeat(new DTOFileInfo(), answerSize).ToArray();
-            var oldestFileDate = DateTime.MaxValue;
-            int oldestItemId = 0;
+            var newestFileDate = DateTime.MaxValue;
+            int newestFileId = 0;
             foreach (var file in incomingFiles)
             {
                 var currentFileChangeDate = file.changedate;
-                if (DateTime.Compare(oldestFileDate , currentFileChangeDate) > 0)
+                if (DateTime.Compare(currentFileChangeDate, newestFileDate) < 0)
                 {
-                    tenOldestFiles[oldestItemId] = file;
-                    smallestSizeInSample = tenOldestFiles.Min(x => x.size);
-                    var smallestItem = tenOldestFiles.Last(x => x.size == smallestSizeInSample);
-                    oldestItemId = Array.LastIndexOf(tenOldestFiles, smallestItem);
+                    tenOldestFiles[newestFileId] = file;
+                    newestFileDate = tenOldestFiles.Max(x => x.changedate);
+                    var smallestItem = tenOldestFiles.Last(x => x.changedate == newestFileDate);
+                    newestFileId = Array.LastIndexOf(tenOldestFiles, smallestItem);
                 }
             }
 
-            tenOldestFiles = tenOldestFiles.OrderBy(x => x.size).ToArray();
-            Array.Reverse(tenOldestFiles);
+            tenOldestFiles = tenOldestFiles.OrderBy(x => x.changedate).ToArray();
 
             var amountOfColumns = 2;
             var answer = new string[answerSize + 1, amountOfColumns];
             answer[0, 0] = "file name"; //header of output table
-            answer[0, 1] = "file size";
+            answer[0, 1] = "file changedate";
             for (int i = 0; i < answerSize; i++)
             {
                 answer[i + 1, 0] = Path.GetFileNameWithoutExtension(tenOldestFiles[i].name);
-                var currentItemSize = tenOldestFiles[i].size;
-
-                var teraByte = 1099511627776;
-                if (currentItemSize > teraByte)
-                {
-                    answer[i + 1, 1] = (currentItemSize / teraByte).ToString() + " Tb"; // (1+...)shift for headder
-                }
-                var gigaByte = 1073741824;
-                if (currentItemSize > gigaByte)
-                {
-                    answer[i + 1, 1] = (currentItemSize / gigaByte).ToString() + " Gb";
-                }
-                var megaByte = 1048576;
-                if (currentItemSize > megaByte)
-                {
-                    answer[i + 1, 1] = (currentItemSize / megaByte).ToString() + " Mb";
-                }
-                var kiloByte = 1024;
-                if (currentItemSize > kiloByte)
-                {
-                    answer[i + 1, 1] = (currentItemSize / kiloByte).ToString() + " Kb";
-                }
-                else
-                {
-                    answer[i + 1, 1] = (currentItemSize).ToString() + " bytes";
-                }
+                answer[i + 1, 1] = tenOldestFiles[i].changedate.ToString();
             }
             return answer;
         }
 
-        internal static string[,] GetFrequentExtension(string directory)
+        internal static string[,] GetFrequentExtension(List<DTOFileInfo> incomingFiles)
         {
-            string[] listOfFiles = Directory.GetFiles(directory);
-            
             var listOfExtensions = new List<string>();
             var listOfAmountOfExtensions = new List<int>();
 
-            foreach (var file in listOfFiles)
+            foreach (var file in incomingFiles)
             {
-                string currentFileExtension = Path.GetExtension(file);
+                string currentFileExtension = file.extension;
                 var searchedElement = listOfExtensions.IndexOf(currentFileExtension);
                 
                 if (searchedElement == -1)
@@ -208,17 +180,18 @@ namespace DirectoryAnalyzer
             }
             while (gotRelocateThisTurn == true);
 
-            var answer = new string[11,2];
+
+            var maxSampleSize = 10;
+            var answerSize = Math.Min(maxSampleSize, amountOfExtensions);
+            var answer = new string[answerSize + 1, 2]; // ( + 1 to inseart headder of the table)
             answer[0, 0] = "extension";
-            answer[0, 1] = "appearance number";
-            for (int i = 0; i < amountOfExtensions && i < 10; i++)
+            answer[0, 1] = "number of appearances";
+            for (int i = 0; i < answerSize; i++)
             {
                 answer[i + 1, 0] = listOfExtensions[i];
                 answer[i + 1, 1] = listOfAmountOfExtensions[i].ToString();
             }
             return answer;
         }
-
-        
     }
 }
