@@ -13,4 +13,11 @@ internal class DTOFileInfo
         size = incomingFileInfo.Length / 1024;
         changedate = incomingFileInfo.LastWriteTime;
     }
+    public DTOFileInfo()
+    {
+        this.name = "stub_name";
+        this.extension = "stub_extension";
+        this.size = 0;
+        this.changedate = DateTime.MaxValue;
+    }
 }

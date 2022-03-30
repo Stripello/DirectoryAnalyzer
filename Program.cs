@@ -21,7 +21,7 @@ foreach (var tableElement in TableOperator.BuildTable(frequentExtensons))
     Console.WriteLine(tableElement);
 }
 */
-var directory = @"E:\games\BOA";
+var directory = @"D:\games\Sonora";
 var files = DirectoryOperation.GetAllFiles(directory);
 var table = TableOperator.BuildTable(DirectoryOperation.GetBiggestFiles(files));
 
@@ -29,3 +29,15 @@ foreach (var element in table)
 {
     Console.WriteLine(element);
 }
+
+
+/* TODO
+ * 
+ * empty directories
+ * big directories
+ * less then 10 files directories
+ * access problem
+ * 
+ * cleanup
+ * length check
+ */

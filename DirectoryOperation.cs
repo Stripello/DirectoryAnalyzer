@@ -52,8 +52,8 @@ namespace DirectoryAnalyzer
         {
             var maxSampleSize = 10; //according to task
             var answerSize = Math.Min(incomingFiles.Count, maxSampleSize);
-            
-            var tenBiggestFiles = new DTOFileInfo[answerSize];
+
+            var tenBiggestFiles = Enumerable.Repeat(new DTOFileInfo(),answerSize).ToArray();
             long smallestSizeInSample = 0;
             int smallestItemID = 0;
             foreach (var file in incomingFiles)
@@ -68,8 +68,11 @@ namespace DirectoryAnalyzer
                 }
             }
 
+            tenBiggestFiles = tenBiggestFiles.OrderBy(x => x.size).ToArray();
+            Array.Reverse(tenBiggestFiles);
+
             var amountOfColumns = 2;
-            var answer = new string[answerSize , amountOfColumns];
+            var answer = new string[answerSize +1, amountOfColumns];
             answer[0, 0] = "file name"; //header of output table
             answer[0, 1] = "file size";
             for (int i = 0; i < answerSize; i++)
@@ -105,42 +108,63 @@ namespace DirectoryAnalyzer
             return answer;
         }
 
-        internal static string[,] GetOldestFiles(string directory)
+        internal static string[,] GetOldestFiles(List<DTOFileInfo> incomingFiles)
         {
-            string[] listOfFiles = Directory.GetFiles(directory);
-            int amountOfFiles = listOfFiles.Length;
-            var listOfFilesAndDates = new (string, DateTime)[amountOfFiles];
-            for (int i = 0; i < amountOfFiles; i++)
-            {
-                listOfFilesAndDates[i] = (listOfFiles[i], new FileInfo(listOfFiles[i]).LastWriteTime);
-            }
+            var maxSampleSize = 10; //according to task
+            var answerSize = Math.Min(incomingFiles.Count, maxSampleSize);
 
-            bool gotRelocateThisTurn;
-            do
+            var tenOldestFiles = Enumerable.Repeat(new DTOFileInfo(), answerSize).ToArray();
+            var oldestFileDate = DateTime.MaxValue;
+            int oldestItemId = 0;
+            foreach (var file in incomingFiles)
             {
-                gotRelocateThisTurn = false;
-                for (int i = 0; i < amountOfFiles - 1; i++)
+                var currentFileChangeDate = file.changedate;
+                if (DateTime.Compare(oldestFileDate , currentFileChangeDate) > 0)
                 {
-                    if (DateTime.Compare(listOfFilesAndDates[i].Item2 , listOfFilesAndDates[i+1].Item2) >0)
-                    {
-                        (string, DateTime) tmp = listOfFilesAndDates[i];
-                        listOfFilesAndDates[i] = listOfFilesAndDates[i + 1];
-                        listOfFilesAndDates[i + 1] = tmp;
-                        gotRelocateThisTurn = true;
-                    }
+                    tenOldestFiles[oldestItemId] = file;
+                    smallestSizeInSample = tenOldestFiles.Min(x => x.size);
+                    var smallestItem = tenOldestFiles.Last(x => x.size == smallestSizeInSample);
+                    oldestItemId = Array.LastIndexOf(tenOldestFiles, smallestItem);
                 }
             }
-            while (gotRelocateThisTurn == true);
 
-            var answer = new string[11, 2];
-            answer[0, 0] = "file name";
-            answer[0, 1] = "latest change time";
-            for (int i = 0; i < amountOfFiles && i < 10; i++)
+            tenOldestFiles = tenOldestFiles.OrderBy(x => x.size).ToArray();
+            Array.Reverse(tenOldestFiles);
+
+            var amountOfColumns = 2;
+            var answer = new string[answerSize + 1, amountOfColumns];
+            answer[0, 0] = "file name"; //header of output table
+            answer[0, 1] = "file size";
+            for (int i = 0; i < answerSize; i++)
             {
-                answer[i + 1, 0] = Path.GetFileNameWithoutExtension(listOfFilesAndDates[i].Item1);
-                answer[i + 1, 1] = listOfFilesAndDates[i].Item2.ToString();
-            }
+                answer[i + 1, 0] = Path.GetFileNameWithoutExtension(tenOldestFiles[i].name);
+                var currentItemSize = tenOldestFiles[i].size;
 
+                var teraByte = 1099511627776;
+                if (currentItemSize > teraByte)
+                {
+                    answer[i + 1, 1] = (currentItemSize / teraByte).ToString() + " Tb"; // (1+...)shift for headder
+                }
+                var gigaByte = 1073741824;
+                if (currentItemSize > gigaByte)
+                {
+                    answer[i + 1, 1] = (currentItemSize / gigaByte).ToString() + " Gb";
+                }
+                var megaByte = 1048576;
+                if (currentItemSize > megaByte)
+                {
+                    answer[i + 1, 1] = (currentItemSize / megaByte).ToString() + " Mb";
+                }
+                var kiloByte = 1024;
+                if (currentItemSize > kiloByte)
+                {
+                    answer[i + 1, 1] = (currentItemSize / kiloByte).ToString() + " Kb";
+                }
+                else
+                {
+                    answer[i + 1, 1] = (currentItemSize).ToString() + " bytes";
+                }
+            }
             return answer;
         }
 
@@ -176,14 +200,8 @@ namespace DirectoryAnalyzer
                 {
                     if (listOfAmountOfExtensions[i] < listOfAmountOfExtensions[i+1])
                     {
-                        var tempInt = listOfAmountOfExtensions[i];
-                        listOfAmountOfExtensions[i] = listOfAmountOfExtensions[i + 1];
-                        listOfAmountOfExtensions[i+1] = tempInt;
-
-                        var tempString = listOfExtensions[i];
-                        listOfExtensions[i] = listOfExtensions[i + 1];
-                        listOfExtensions[i + 1] = tempString;
-
+                        (listOfAmountOfExtensions[i + 1], listOfAmountOfExtensions[i]) = (listOfAmountOfExtensions[i], listOfAmountOfExtensions[i + 1]);
+                        (listOfExtensions[i + 1], listOfExtensions[i]) = (listOfExtensions[i], listOfExtensions[i + 1]);
                         gotRelocateThisTurn = true;
                     }
                 }
