@@ -168,14 +168,17 @@ namespace DirectoryAnalyzer
                 {
                     if (listOfAmountOfExtensions[i] < listOfAmountOfExtensions[i+1])
                     {
-                        (listOfAmountOfExtensions[i + 1], listOfAmountOfExtensions[i]) = (listOfAmountOfExtensions[i], listOfAmountOfExtensions[i + 1]);
-                        (listOfExtensions[i + 1], listOfExtensions[i]) = (listOfExtensions[i], listOfExtensions[i + 1]);
+                        (listOfAmountOfExtensions[i + 1], listOfAmountOfExtensions[i]) =
+                            (listOfAmountOfExtensions[i], listOfAmountOfExtensions[i + 1]);
+
+                        (listOfExtensions[i + 1], listOfExtensions[i]) = 
+                            (listOfExtensions[i], listOfExtensions[i + 1]);
+
                         gotRelocateThisTurn = true;
                     }
                 }
             }
             while (gotRelocateThisTurn == true);
-
 
             var maxSampleSize = 10;
             var answerSize = Math.Min(maxSampleSize, amountOfExtensions);

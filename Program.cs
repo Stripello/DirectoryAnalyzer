@@ -1,5 +1,5 @@
 ﻿using DirectoryAnalyzer;
-
+/*
 var directory = DirectoryOperation.AskDirectory();
 var files = DirectoryOperation.GetAllFiles(directory);
 
@@ -21,6 +21,15 @@ foreach (var element in table)
 {
     Console.WriteLine(element);
 }
+*/
+
+foreach (var a in Logger.GetCurrentLog())
+{
+    Console.WriteLine(a);
+}
+
+Logger.UpdateLog(new string[] { });
+
 
 /* TODO
  * 
@@ -28,6 +37,7 @@ foreach (var element in table)
  * big directories
  * less then 10 files directories
  * access problem
+ * instead of 
  * fancy крутилко
  * 
  * cleanup
