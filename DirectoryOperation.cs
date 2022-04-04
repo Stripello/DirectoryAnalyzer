@@ -1,16 +1,18 @@
-﻿using System.Linq;
-
-namespace DirectoryAnalyzer
+﻿namespace DirectoryAnalyzer
 {
     internal static class DirectoryOperation
     {
-        internal static string AskDirectory()
+        internal static string? AskDirectory()
         {
             string directory;
             do
             {
-                Console.WriteLine("Please, enter directory.");
+                Console.WriteLine("Please, enter directory or type \"Exit\" to terminate process.");
                 directory = Console.ReadLine();
+                if (directory.ToLower() == "exit")
+                {
+                    return null;
+                }
                 if (Directory.Exists(directory))
                 {
                     return directory;
