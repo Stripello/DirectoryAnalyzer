@@ -1,5 +1,5 @@
 ﻿using DirectoryAnalyzer;
-
+/*
 var directory = DirectoryOperation.AskDirectory();
 if (directory == null)
 {
@@ -25,17 +25,17 @@ foreach (var element in table)
 {
     Console.WriteLine(element);
 }
-
-
+*/
+Logger.ModifyLog("a");
 
 
 /* TODO
  * 
  * big directories
- * access problem
- * instead of 
  * fancy крутилко
  * 
+ * forbidden symbols of directory and file names are same for windows,linux and macos systems?
+ * directory and file existance check
  * cleanup
  * length check
  */
