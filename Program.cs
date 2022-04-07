@@ -26,7 +26,16 @@ foreach (var element in table)
     Console.WriteLine(element);
 }
 */
-Logger.ModifyLog("a");
+
+var am = new DtoFileInfo("D:\\temp\\перевод.pdf");
+var sa = am.ToString();
+Console.WriteLine(sa);
+foreach (var a in DtoFileInfo.Parse(sa))
+{
+    Console.WriteLine(a);
+}
+
+
 
 
 /* TODO

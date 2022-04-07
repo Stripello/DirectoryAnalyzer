@@ -22,9 +22,9 @@
             while (true);
         }
 
-        internal static List<DTOFileInfo> GetAllFiles(string directory)
+        internal static List<DtoFileInfo> GetAllFiles(string directory)
         {
-            var answer = new List<DTOFileInfo>();
+            var answer = new List<DtoFileInfo>();
             var allSubdirectories = Directory.GetDirectories(directory);
             
             if (allSubdirectories.Length != 0)
@@ -44,18 +44,18 @@
             FileInfo[] files = directoryInfo.GetFiles();
             foreach (var file in files)
             {
-                answer.Add(new DTOFileInfo(file));
+                answer.Add(new DtoFileInfo(file));
             }
 
             return answer;
         }
 
-        internal static string[,] GetBiggestFiles(List<DTOFileInfo> incomingFiles)
+        internal static string[,] GetBiggestFiles(List<DtoFileInfo> incomingFiles)
         {
             var maxSampleSize = 10; //according to task
             var answerSize = Math.Min(incomingFiles.Count, maxSampleSize);
 
-            var tenBiggestFiles = Enumerable.Repeat(new DTOFileInfo(),answerSize).ToArray();
+            var tenBiggestFiles = Enumerable.Repeat(new DtoFileInfo(),answerSize).ToArray();
             long smallestSizeInSample = 0;
             int smallestItemID = 0;
             foreach (var file in incomingFiles)
@@ -106,12 +106,12 @@
             return answer;
         }
 
-        internal static string[,] GetOldestFiles(List<DTOFileInfo> incomingFiles)
+        internal static string[,] GetOldestFiles(List<DtoFileInfo> incomingFiles)
         {
             var maxSampleSize = 10; //according to task
             var answerSize = Math.Min(incomingFiles.Count, maxSampleSize);
 
-            var tenOldestFiles = Enumerable.Repeat(new DTOFileInfo(), answerSize).ToArray();
+            var tenOldestFiles = Enumerable.Repeat(new DtoFileInfo(), answerSize).ToArray();
             var newestFileDate = DateTime.MaxValue;
             int newestFileId = 0;
             foreach (var file in incomingFiles)
@@ -140,7 +140,7 @@
             return answer;
         }
 
-        internal static string[,] GetFrequentExtension(List<DTOFileInfo> incomingFiles)
+        internal static string[,] GetFrequentExtension(List<DtoFileInfo> incomingFiles)
         {
             var listOfExtensions = new List<string>();
             var listOfAmountOfExtensions = new List<int>();

@@ -13,6 +13,8 @@
         {
             var pathy = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + "\\Log\\fileLog.txt";
             File.AppendAllTextAsync(pathy, "a1");
+            
+
         }
     }
 }
