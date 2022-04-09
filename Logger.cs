@@ -4,17 +4,31 @@
     {
         internal static string GetCurrentDirectory()
         {
-            var fi = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + "\\Log\\fileLog.txt";
-            var an = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + "\\Log\\answerLog.txt";
+            var fi = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + "\\Log\\ShortLog.txt";
+            var an = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + "\\Log\\LongLog.txt";
             return fi;
         }
 
-        internal static void ModifyLog(string path)
+        internal static string[]? GetSearchLog()
         {
-            var pathy = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + "\\Log\\fileLog.txt";
-            File.AppendAllTextAsync(pathy, "a1");
-            
+            var path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + "\\Log\\ShortLog.txt";
+            if (!File.Exists(path))
+            {
+                File.Create(path);
+                return null;
+            }
+            else
+            {
+                return File.ReadAllLines(path);
+            }
+        }
 
+        internal static void ModifySearchLog(string searchedDirectory, )
+        {
+            var pathSearchLog = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + "\\Log\\SearchLog.txt";
+            File.WriteAllTextAsync(pathSearchLog, searchedDirectory);
+
+            var 
         }
     }
 }

@@ -50,9 +50,15 @@ internal class DtoFileInfo
         sb.Append(changedate.ToString());
         return sb.ToString();
     }
-    internal static string[] Parse(string stringToParse)
+    internal static DtoFileInfo Parse(string stringToParse)
     {
-        return stringToParse.Split('*');
+        var temp = stringToParse.Split('*');
+        var answer = new DtoFileInfo();
+        answer.name = temp[0];
+        answer.extension = temp[1];
+        answer.size = long.Parse(temp[2]);
+        answer.changedate = DateTime.Parse(temp[3]);
+        return answer;
     }
 
 
