@@ -23,12 +23,23 @@
             }
         }
 
-        internal static void ModifySearchLog(string searchedDirectory, )
+        internal static void AddToShortLog(string searchedDirectory)
         {
-            var pathSearchLog = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + "\\Log\\SearchLog.txt";
-            File.WriteAllTextAsync(pathSearchLog, searchedDirectory);
-
-            var 
+            var shortLog = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + "\\Log\\ShortLog.txt";
+            if (!File.Exists(shortLog))
+            {
+                File.Create(shortLog);
+            }
+            File.AppendAllText(shortLog, searchedDirectory);
+        }
+        internal static void AddToLongLog(string searchedResult)
+        {
+            var shortLog = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + "\\Log\\LongLog.txt";
+            if (!File.Exists(shortLog))
+            {
+                File.Create(shortLog);
+            }
+            File.AppendAllText(shortLog, searchedResult);
         }
     }
 }
