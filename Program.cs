@@ -1,5 +1,6 @@
 ﻿using DirectoryAnalyzer;
-/*
+
+
 var directory = DirectoryOperation.AskDirectory();
 if (directory == null)
 {
@@ -25,19 +26,6 @@ foreach (var element in table)
 {
     Console.WriteLine(element);
 }
-*/
-Parallel.Invoke(
-    () =>
-    {
-     DirectoryOperation.AnotherProcess();
-    },
-
-    ()=>
-    {
-    DirectoryOperation.Awaiter();
-    }
-    
-    ); ;
 
 
 

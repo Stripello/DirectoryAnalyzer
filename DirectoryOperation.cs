@@ -22,8 +22,13 @@
             while (true);
         }
 
-        internal static List<DtoFileInfo> GetAllFiles(string directory)
+        internal static List<DtoFileInfo> GetAllFiles(string directory, string[]? shortLog, string[]? longLog)
         {
+            var position = Array.IndexOf(shortLog, directory);
+            if (position > -1)
+            {
+                return Logger.GetLongLog(directory);
+            }
             var answer = new List<DtoFileInfo>();
             var allSubdirectories = Directory.GetDirectories(directory);
             
@@ -33,7 +38,7 @@
                 {
                     try
                     {
-                        answer.AddRange(GetAllFiles(subdirectory));
+                        answer.AddRange(GetAllFiles(subdirectory, shortLog,longLog));
                     }
                     catch
                     {
@@ -194,7 +199,7 @@
             }
             return answer;
         }
-
+        /*
         async internal static void Awaiter()
         {
             var waity = 100;
@@ -226,7 +231,7 @@
                 Console.Write(i);
                 Thread.Sleep(1000);
             }
-            
         }
+        */
     }
 }

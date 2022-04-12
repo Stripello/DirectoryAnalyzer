@@ -7,6 +7,7 @@ internal class DtoFileInfo
     internal string extension;
     internal long size;
     internal DateTime changedate;
+
     internal DtoFileInfo()
     {
         name = "stub_name";
