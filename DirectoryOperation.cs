@@ -50,6 +50,15 @@
 
             return answer;
         }
+        internal static List<DtoFileInfo> GetAllFiles(FileSystem incomingFileSystem)
+        {
+            var answer = new List<DtoFileInfo> { };
+            foreach (var node in incomingFileSystem.fileSystem)
+            {
+                answer.AddRange(node.Value.content);
+            }
+            return answer;
+        }
 
         internal static string[,] GetBiggestFiles(List<DtoFileInfo> incomingFiles)
         {
@@ -195,6 +204,7 @@
             }
             return answer;
         }
+
         /*
         async internal static void Awaiter()
         {

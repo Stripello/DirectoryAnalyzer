@@ -26,7 +26,6 @@ namespace DirectoryAnalyzer
             this.parent = parent;
             this.child = child;
             this.content = content;
-
         }
 
         internal FileSystemNode(string directory)

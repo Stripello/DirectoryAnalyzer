@@ -10,6 +10,40 @@ namespace DirectoryAnalyzer
     {
         internal Dictionary<string, FileSystemNode> fileSystem;
 
+        internal FileSystem(string directory) //Creates FS class example of chosen directory
+        {
+            fileSystem = new Dictionary<string, FileSystemNode>();
+            var tempNode = new FileSystemNode(directory);
+            AddNode(tempNode);
+            foreach (var childNodeAdress in tempNode.child)
+            {
+                var subFileSystem = new FileSystem(childNodeAdress);
+                foreach (var element in subFileSystem.fileSystem.Keys)
+                {
+                    AddNode(subFileSystem.fileSystem[element]);
+                }
+            }
+        }
+
+        internal FileSystem(bool fromLog) //creates FS class example from log or empty one
+        {
+            if (!fromLog)
+            {
+                fileSystem = new Dictionary<string, FileSystemNode>();
+                return ;
+            }
+            var logFile = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName +
+                "\\Log\\Log.txt";
+
+            if (!File.Exists(logFile))
+            {
+                File.Create(logFile);
+                fileSystem = new Dictionary<string, FileSystemNode>();
+                return;
+            }
+            fileSystem = Parse(File.ReadAllLines(logFile)).fileSystem;
+        }
+
         private bool AddNode(FileSystemNode incomingNode)
         {
             if (fileSystem != null && fileSystem.ContainsKey(incomingNode.name))
@@ -22,42 +56,6 @@ namespace DirectoryAnalyzer
                 return true;
             }
         }
-      
-        internal FileSystem(string directory) //Creates FS class example of chosen directory
-        {
-            fileSystem = new Dictionary<string, FileSystemNode>();
-            var tempNode = new FileSystemNode(directory);
-            AddNode(tempNode);
-            foreach (var childNodeAdress in tempNode.child)
-            {
-                var subFileSystem =new FileSystem(childNodeAdress);
-                foreach (var element in subFileSystem.fileSystem.Keys)
-                {
-                    AddNode(subFileSystem.fileSystem[element]);
-                }
-            }
-        }
-
-        internal FileSystem(bool fromLog) //creates FS class example from log or empty one
-        {
-            fileSystem = new Dictionary<string, FileSystemNode>();
-            if (!fromLog)
-            {
-                return;
-            }
-            var logFile = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName +
-                "\\Log\\Log.txt";
-            
-            if (!File.Exists(logFile))
-            {
-                File.Create(logFile);
-                return;
-            }
-            var Log = File.ReadAllLines(logFile);
-
-
-        }
-
         internal string[] ToStringArray()
         {
             var sb = new StringBuilder();
@@ -77,7 +75,7 @@ namespace DirectoryAnalyzer
             return sb.ToString().Split("\n");
         }
 
-        private FileSystem Parse(string[] incomingText)
+        private static FileSystem Parse(string[] incomingText)
         {
             var answer = new FileSystem(false);
 
@@ -129,7 +127,7 @@ namespace DirectoryAnalyzer
             return answer;
         }
 
-        internal static FileSystem GetOnlyChild(string directory, FileSystem incomingFS)
+        internal static FileSystem GetOnlyChild(string directory, FileSystem incomingFS) //bd naming
         {
             var answer = new FileSystem(false);
             if (!incomingFS.fileSystem.ContainsKey(directory))
@@ -139,11 +137,24 @@ namespace DirectoryAnalyzer
             var parentNode = incomingFS.fileSystem[directory];
             answer.AddNode(parentNode);
 
-            
+            var currentGeneration = parentNode.child;
+            var futureGeneration = new List<string>{ };
+
             while (true)
             {
-                var currentGeneration = new List<Nod>
-
+                foreach (var elementOfCurrentGeneration in currentGeneration)
+                {
+                    answer.AddNode(incomingFS.fileSystem[elementOfCurrentGeneration]);
+                    futureGeneration.AddRange(incomingFS.fileSystem[elementOfCurrentGeneration].child);
+                }
+                if (futureGeneration.Count == 0)
+                {
+                    break;
+                }
+                else
+                {
+                    currentGeneration = futureGeneration;
+                }
             }
 
             return answer;

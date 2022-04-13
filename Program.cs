@@ -1,6 +1,8 @@
 ﻿using DirectoryAnalyzer;
 
 
+
+
 /* TODO
  * change DTOFileInfo - delete all info about directory
  * FSNode by lambda sentence
