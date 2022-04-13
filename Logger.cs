@@ -4,20 +4,32 @@ namespace DirectoryAnalyzer
 {
     internal class Logger
     {
-        internal Dictionary<long, FileSystemNode> knownFileSystem = new Dictionary<long, FileSystemNode> { };
-        internal static string[]? GetLog()
+        internal static bool CheckMetadata(string directory) //check ability of log to provide data for definite directory
         {
-            var path = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName +
-                "\\Log\\Log.txt";
-            if (!File.Exists(path))
+            var metaDataFile = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName +
+                "\\Log\\Meta.txt";
+            if (!File.Exists(metaDataFile))
             {
-                File.Create(path);
-                return null;
+                File.Create(metaDataFile);
+                return false;
             }
-            else
+            var metaData = File.ReadAllLines(metaDataFile);
+            while (true)
             {
-                return File.ReadAllLines(path);
+                if (Array.IndexOf(metaData, directory) != -1)
+                {
+                    return true;
+                }
+                if (directory != Directory.GetDirectoryRoot(directory))
+                {
+                    directory = Directory.GetDirectoryRoot(directory);
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
+
     }
 }

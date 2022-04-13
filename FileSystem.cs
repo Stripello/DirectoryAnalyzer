@@ -23,7 +23,7 @@ namespace DirectoryAnalyzer
             }
         }
       
-        internal FileSystem(string directory) //Creates FS class of chosen directory
+        internal FileSystem(string directory) //Creates FS class example of chosen directory
         {
             fileSystem = new Dictionary<string, FileSystemNode>();
             var tempNode = new FileSystemNode(directory);
@@ -38,7 +38,7 @@ namespace DirectoryAnalyzer
             }
         }
 
-        internal FileSystem(bool fromLog) //creates FS class from log
+        internal FileSystem(bool fromLog) //creates FS class example from log or empty one
         {
             fileSystem = new Dictionary<string, FileSystemNode>();
             if (!fromLog)
@@ -58,10 +58,10 @@ namespace DirectoryAnalyzer
 
         }
 
-        internal string[] ToString(FileSystem fileSystem)
+        internal string[] ToStringArray()
         {
             var sb = new StringBuilder();
-            foreach (var elemet in fileSystem.fileSystem)
+            foreach (var elemet in fileSystem)
             {
                 sb.Append("\n$" + elemet.Key);
                 sb.Append("\n?" + elemet.Value.parent);
@@ -74,49 +74,79 @@ namespace DirectoryAnalyzer
                     sb.Append("\n*"+file.ToString());
                 }
             }
-
             return sb.ToString().Split("\n");
         }
 
-        private FileSystem Parse(string[] incomingData)
+        private FileSystem Parse(string[] incomingText)
         {
             var answer = new FileSystem(false);
-            
 
-
-            return answer;
-        }
-
-        internal static bool CheckMetadata(string directory) //check ability of log to provide data for definite directory
-        {
-            var metaDataFile = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName +
-                "\\Log\\Meta.txt";
-            if (!File.Exists(metaDataFile))
+            var listOfNodeHeads = new List<long>();
+            for (long i = 0; i < incomingText.Length; i++)
             {
-                File.Create(metaDataFile);
-                return false;
-            }
-            var metaData = File.ReadAllLines(metaDataFile);
-            while (true)
-            {
-                if (Array.IndexOf(metaData, directory) != -1)
+                if (incomingText[i].StartsWith("$"))
                 {
-                    return true;
+                    listOfNodeHeads.Add(i);
                 }
-                if (directory != Directory.GetDirectoryRoot(directory))
+            }
+
+            for (int i =0; i < listOfNodeHeads.Count; i++) 
+            {
+                var beginIndex = listOfNodeHeads[i];
+                long endIndex;
+                if (i == listOfNodeHeads.Count)
                 {
-                    directory = Directory.GetDirectoryRoot(directory);
+                    endIndex = incomingText.Length - 1;
                 }
                 else
                 {
-                    return false;
+                    endIndex = listOfNodeHeads[i + 1];
                 }
+
+                var name = incomingText[beginIndex].Remove(0, 1);
+                var parent = incomingText[beginIndex + 1].Remove(0, 1);
+
+                var child = new List<string> { };
+                var content = new List<DtoFileInfo> { };
+                for (long j = beginIndex + 2; j <= endIndex; j++)
+                {
+                    if (incomingText[j].StartsWith(">"))
+                    {
+                        child.Add(incomingText[j].Remove(0, 1));
+                    }
+                    if (incomingText[j].StartsWith("*"))
+                    {
+                        var tempDTO = DtoFileInfo.Parse(incomingText[j].Remove(0,1));
+                        content.Add(tempDTO);
+                    }
+                    else
+                    {
+                        throw new Exception("Parser error.");
+                    }
+                }
+                answer.AddNode(new FileSystemNode(name, parent, child, content));
             }
+            return answer;
         }
 
-        internal void LeftOnlyChildNodes(string directory)
+        internal static FileSystem GetOnlyChild(string directory, FileSystem incomingFS)
         {
+            var answer = new FileSystem(false);
+            if (!incomingFS.fileSystem.ContainsKey(directory))
+            {
+                return answer;
+            }
+            var parentNode = incomingFS.fileSystem[directory];
+            answer.AddNode(parentNode);
 
+            
+            while (true)
+            {
+                var currentGeneration = new List<Nod>
+
+            }
+
+            return answer;
         }
     }
 }

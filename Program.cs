@@ -1,6 +1,5 @@
 ﻿using DirectoryAnalyzer;
 
-Console.WriteLine(FileSystem.CheckMetadata(@"E:\repository\")); 
 
 /* TODO
  * change DTOFileInfo - delete all info about directory
@@ -10,10 +9,12 @@ Console.WriteLine(FileSystem.CheckMetadata(@"E:\repository\"));
  * big directories
  * fancy крутилко
  * directory = tomename exception
- * 
+ * FileSystem.Parse add divider by parts 
+ * FileSystem.GetOnlyChild could be optimized
  * 
  * forbidden symbols of directory and file names are same for windows,linux and macos systems?
  * directory and file existance check
  * cleanup
  * length check
+ * accessability check
  */

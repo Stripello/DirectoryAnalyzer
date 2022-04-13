@@ -20,6 +20,15 @@ namespace DirectoryAnalyzer
         internal List<string>? child;
         internal List<DtoFileInfo>? content;
 
+        public FileSystemNode(string name, string? parent, List<string>? child, List<DtoFileInfo>? content)
+        {
+            this.name = name;
+            this.parent = parent;
+            this.child = child;
+            this.content = content;
+
+        }
+
         internal FileSystemNode(string directory)
         {
             name = directory;
@@ -39,6 +48,6 @@ namespace DirectoryAnalyzer
             }
         }
 
-        
+
     }
 }
