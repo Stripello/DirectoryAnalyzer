@@ -6,13 +6,6 @@ using System.Threading.Tasks;
 
 namespace DirectoryAnalyzer
 {
-    enum FsNodeStatus
-    {
-        orphan,        //core of all file system, like tome itself
-        unknownFather, //father node unknown by FileSystem, but exist
-        fledgling      //no child nodes 
-    }
-
     internal class FileSystemNode
     {
         internal string name;
@@ -46,7 +39,5 @@ namespace DirectoryAnalyzer
                 content.Add(new DtoFileInfo(file));
             }
         }
-
-
     }
 }

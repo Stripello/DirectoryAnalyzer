@@ -127,7 +127,7 @@ namespace DirectoryAnalyzer
             return answer;
         }
 
-        internal static FileSystem GetOnlyChild(string directory, FileSystem incomingFS) //bd naming
+        internal static FileSystem GetOnlyChild(string directory, FileSystem incomingFS) //bad naming
         {
             var answer = new FileSystem(false);
             if (!incomingFS.fileSystem.ContainsKey(directory))
