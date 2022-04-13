@@ -9,35 +9,40 @@ namespace DirectoryAnalyzer
     internal class FileSystemNode
     {
         internal string name;
-        internal string? parent;
-        internal List<string>? child;
-        internal List<DtoFileInfo>? content;
+        internal string parent;
+        internal List<string> children = new();
+        internal List<DtoFileInfo> content = new();
 
-        public FileSystemNode(string name, string? parent, List<string>? child, List<DtoFileInfo>? content)
+        internal static FileSystemNode CreateFromDirectory(string directory)
         {
-            this.name = name;
-            this.parent = parent;
-            this.child = child;
-            this.content = content;
-        }
+            var result = new FileSystemNode();
+            result.name = directory;
+            var files = Array.Empty<string>();
 
-        internal FileSystemNode(string directory)
-        {
-            name = directory;
-            if (directory == Directory.GetDirectoryRoot(directory))
+            try
             {
-                parent = null;
+                if (directory == Directory.GetDirectoryRoot(directory))
+                {
+                    result.parent = null;
+                }
+                else
+                {
+                    result.parent = Directory.GetParent(directory).FullName;
+                }
+                result.children = Directory.GetDirectories(directory).ToList();
+                files = Directory.GetFiles(directory);
             }
-            else
+            catch
             {
-                parent = Directory.GetParent(directory).FullName;
             }
-            child = Directory.GetDirectories(directory).ToList();
-            content = new List<DtoFileInfo>();
-            foreach (var file in Directory.GetFiles(directory))
+            
+            result.content = new List<DtoFileInfo>();
+            foreach (var file in files)
             {
-                content.Add(new DtoFileInfo(file));
+                result.content.Add(new DtoFileInfo(file));
             }
+
+            return result;
         }
     }
 }

@@ -1,12 +1,12 @@
 ﻿using DirectoryAnalyzer;
 using System.Text;
 
-var directory = @"D:\";
-var allFiles = DirectoryOperation.GetAllFiles(directory);
-/*
+var directory = @"c:" + Path.DirectorySeparatorChar;
+//var allFiles = DirectoryOperation.GetAllFiles(directory);
+
 var fs = new FileSystem(directory);
 var allFiles = DirectoryOperation.GetAllFiles(fs);
-*/
+
 var biggestFiles = DirectoryOperation.GetBiggestFiles(allFiles);
 var oldestFiles = DirectoryOperation.GetOldestFiles(allFiles);
 var frequientExtension = DirectoryOperation.GetFrequentExtension(allFiles);

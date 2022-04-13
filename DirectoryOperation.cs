@@ -2,7 +2,7 @@
 {
     internal static class DirectoryOperation
     {
-        internal static string? AskDirectory()
+        internal static string AskDirectory()
         {
             string directory;
             do
@@ -36,7 +36,7 @@
                     {
                         answer.AddRange(GetAllFiles(subdirectory));
                     }
-                    catch
+                    catch(Exception e)
                     {
                     }
                 }

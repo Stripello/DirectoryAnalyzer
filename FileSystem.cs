@@ -8,24 +8,30 @@ namespace DirectoryAnalyzer
 {
     internal class FileSystem
     {
-        internal Dictionary<string, FileSystemNode> fileSystem;
+        internal Dictionary<string, FileSystemNode> fileSystem = new();
 
-        internal FileSystem(string directory) //Creates FS class example of chosen directory
+        /// <summary>
+        /// Creates FS class example of chosen directory
+        /// </summary>
+        /// <param name="directory">chosen directory</param>
+        internal FileSystem(string directory)
         {
-            fileSystem = new Dictionary<string, FileSystemNode>();
-            var tempNode = new FileSystemNode(directory);
-            AddNode(tempNode);
-            foreach (var childNodeAdress in tempNode.child)
+            var tempNode = FileSystemNode.CreateFromDirectory(directory);
+            fileSystem.TryAdd(tempNode.name, tempNode);
+            foreach (var childNodeAddress in tempNode.children)
             {
-                var subFileSystem = new FileSystem(childNodeAdress);
+                var subFileSystem = new FileSystem(childNodeAddress);
                 foreach (var element in subFileSystem.fileSystem.Keys)
                 {
-                    AddNode(subFileSystem.fileSystem[element]);
+                    fileSystem.TryAdd(subFileSystem.fileSystem[element].name, subFileSystem.fileSystem[element]);
                 }
             }
         }
 
-        internal FileSystem(bool fromLog) //creates FS class example from log or empty one
+        /// <summary>
+        /// Creates FS class example from log or empty one
+        /// </summary>
+        internal FileSystem(bool fromLog)
         {
             if (!fromLog)
             {
@@ -44,18 +50,6 @@ namespace DirectoryAnalyzer
             fileSystem = Parse(File.ReadAllLines(logFile)).fileSystem;
         }
 
-        private bool AddNode(FileSystemNode incomingNode)
-        {
-            if (fileSystem != null && fileSystem.ContainsKey(incomingNode.name))
-            {
-                return false;
-            }
-            else
-            {
-                fileSystem.Add(incomingNode.name, incomingNode);
-                return true;
-            }
-        }
         internal string[] ToStringArray()
         {
             var sb = new StringBuilder();
@@ -63,7 +57,7 @@ namespace DirectoryAnalyzer
             {
                 sb.Append("\n$" + elemet.Key);
                 sb.Append("\n?" + elemet.Value.parent);
-                foreach (var childNode in elemet.Value.child)
+                foreach (var childNode in elemet.Value.children)
                 {
                     sb.Append("\n>"+childNode);
                 }
@@ -122,7 +116,8 @@ namespace DirectoryAnalyzer
                         throw new Exception("Parser error.");
                     }
                 }
-                answer.AddNode(new FileSystemNode(name, parent, child, content));
+                //             new FileSystemNode(name, parent, child, content)
+                answer.fileSystem.TryAdd(name, new FileSystemNode {name = name, children = child, content = content, parent = parent});
             }
             return answer;
         }
@@ -135,17 +130,17 @@ namespace DirectoryAnalyzer
                 return answer;
             }
             var parentNode = incomingFS.fileSystem[directory];
-            answer.AddNode(parentNode);
+            answer.fileSystem.TryAdd(parentNode.name, parentNode);
 
-            var currentGeneration = parentNode.child;
+            var currentGeneration = parentNode.children;
             var futureGeneration = new List<string>{ };
 
             while (true)
             {
                 foreach (var elementOfCurrentGeneration in currentGeneration)
                 {
-                    answer.AddNode(incomingFS.fileSystem[elementOfCurrentGeneration]);
-                    futureGeneration.AddRange(incomingFS.fileSystem[elementOfCurrentGeneration].child);
+                    answer.fileSystem.TryAdd(incomingFS.fileSystem[elementOfCurrentGeneration].name, incomingFS.fileSystem[elementOfCurrentGeneration]);
+                    futureGeneration.AddRange(incomingFS.fileSystem[elementOfCurrentGeneration].children);
                 }
                 if (futureGeneration.Count == 0)
                 {
