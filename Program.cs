@@ -1,39 +1,16 @@
 ﻿using DirectoryAnalyzer;
 
-
-var directory = DirectoryOperation.AskDirectory();
-if (directory == null)
-{
-    return;
-}
-var files = DirectoryOperation.GetAllFiles(directory);
-
-var table = TableOperator.BuildTable(DirectoryOperation.GetBiggestFiles(files));
-foreach (var element in table)
-{
-    Console.WriteLine(element);
-}
-
-table = TableOperator.BuildTable(DirectoryOperation.GetOldestFiles(files));
-
-foreach (var element in table)
-{
-    Console.WriteLine(element);
-}
-table = TableOperator.BuildTable(DirectoryOperation.GetFrequentExtension(files));
-
-foreach (var element in table)
-{
-    Console.WriteLine(element);
-}
-
-
-
+Console.WriteLine(FileSystem.CheckMetadata(@"E:\repository\")); 
 
 /* TODO
- * 
+ * change DTOFileInfo - delete all info about directory
+ * FSNode by lambda sentence
+ * change FsNode
+ * change merging two dictionaries
  * big directories
  * fancy крутилко
+ * directory = tomename exception
+ * 
  * 
  * forbidden symbols of directory and file names are same for windows,linux and macos systems?
  * directory and file existance check

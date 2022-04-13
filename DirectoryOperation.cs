@@ -22,13 +22,9 @@
             while (true);
         }
 
-        internal static List<DtoFileInfo> GetAllFiles(string directory, string[]? shortLog, string[]? longLog)
+        internal static List<DtoFileInfo> GetAllFiles(string directory)
         {
-            var position = Array.IndexOf(shortLog, directory);
-            if (position > -1)
-            {
-                return Logger.GetLongLog(directory);
-            }
+            
             var answer = new List<DtoFileInfo>();
             var allSubdirectories = Directory.GetDirectories(directory);
             
@@ -38,7 +34,7 @@
                 {
                     try
                     {
-                        answer.AddRange(GetAllFiles(subdirectory, shortLog,longLog));
+                        answer.AddRange(GetAllFiles(subdirectory));
                     }
                     catch
                     {
