@@ -17,7 +17,7 @@ internal class DtoFileInfo
     }
     internal DtoFileInfo(FileInfo incomingFileInfo)
     {
-        name = incomingFileInfo.FullName;
+        name = incomingFileInfo.Name;
         extension = incomingFileInfo.Extension;
         size = incomingFileInfo.Length;
         changedate = incomingFileInfo.LastWriteTime;
@@ -27,15 +27,15 @@ internal class DtoFileInfo
         if (File.Exists(path))
         {
             var fileInfo = new FileInfo(path);
-            name = fileInfo.FullName;
+            name = fileInfo.Name;
             extension = fileInfo.Extension;
             size = fileInfo.Length;
             changedate = fileInfo.LastWriteTime;
         }
         else
         {
-            name = "stub_name";
-            extension = "stub_extension";
+            name = "error_stub_name";
+            extension = "error_stub_extension";
             size = 0;
             changedate = DateTime.MaxValue;
         }
