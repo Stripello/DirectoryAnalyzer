@@ -3,14 +3,26 @@ using System.Text;
 
 
 var dir = @"E:\games\BOA";
-var dbD = new DataBaseDirectories(dir);
-var dbF = new DataBaseFiles(dbD);
 
-Console.WriteLine(dbF);
+Console.WriteLine("Creating list of all required directories.");
+var requestedDirectoryDB = new DirectoriesDataBase(dir);
 
+Console.WriteLine("Uploading searchlog.");
+var storedDirectoryDB = DirectoriesDataBase.ReadFromFile();
+var compareResults = storedDirectoryDB.Comparator(requestedDirectoryDB);
 
+Console.WriteLine("Uploading data of files represented in data base.");
+var knownFiles = FilesDataBase.ReadFromFile(compareResults.represented);
 
+Console.WriteLine("Collecting data from files not represented in data base.");
+var unknownFiles = new FilesDataBase(compareResults.notRepresented);
 
+Console.WriteLine("Analysing files.");
+var sb = new StringBuilder();
+
+Console.WriteLine("Modifying data base.");
+
+Console.WriteLine("Modifying succeed. Now you can close process.");
 
 /* TODO
  * change DTOFileInfo - delete all info about directory
