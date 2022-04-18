@@ -31,15 +31,5 @@ namespace DirectoryAnalyzer
             }
         }
 
-        internal static void UpdateLog(string directory, FileSystem incomingFileSystem)
-        {
-            var metaDataFile = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName +
-                "\\Log\\Meta.txt";
-            var logDataFile = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName +
-                "\\Log\\Log.txt";
-
-
-        }
-
     }
 }

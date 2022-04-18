@@ -36,7 +36,7 @@
                     {
                         answer.AddRange(GetAllFiles(subdirectory));
                     }
-                    catch(Exception e)
+                    catch(Exception)
                     {
                     }
                 }
@@ -48,15 +48,6 @@
                 answer.Add(new DtoFileInfo(file));
             }
 
-            return answer;
-        }
-        internal static List<DtoFileInfo> GetAllFiles(FileSystem incomingFileSystem)
-        {
-            var answer = new List<DtoFileInfo> { };
-            foreach (var node in incomingFileSystem.fileSystem)
-            {
-                answer.AddRange(node.Value.content);
-            }
             return answer;
         }
 
@@ -204,40 +195,5 @@
             }
             return answer;
         }
-
-        /*
-        async internal static void Awaiter()
-        {
-            var waity = 100;
-            var position = Console.GetCursorPosition();
-            while (true)
-            {
-                Console.SetCursorPosition(position.Left, position,top);
-                Console.Write("|");
-                Thread.Sleep(waity);
-
-                Console.SetCursorPosition(row, column);
-                Console.Write("/");
-                Thread.Sleep(waity);
-
-                Console.SetCursorPosition(row, column);
-                Console.Write("-");
-                Thread.Sleep(waity);
-
-
-                Console.SetCursorPosition(row, column);
-                Console.WriteLine(@"\");
-                Thread.Sleep(waity);
-            }
-        }
-        async internal static void AnotherProcess()
-        {
-            for (int i = 0; i < 10; i++)
-            {
-                Console.Write(i);
-                Thread.Sleep(1000);
-            }
-        }
-        */
     }
 }

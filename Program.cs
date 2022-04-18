@@ -2,6 +2,16 @@
 using System.Text;
 
 
+var dir = @"E:\games\BOA";
+var dbD = new DataBaseDirectories(dir);
+var dbF = new DataBaseFiles(dbD);
+
+Console.WriteLine(dbF);
+
+
+
+
+
 /* TODO
  * change DTOFileInfo - delete all info about directory
  * FSNode by lambda sentence
@@ -14,7 +24,7 @@ using System.Text;
  * FileSystem.GetOnlyChild could be optimized
  * ModifyLog - finish
  * 
- * forbidden symbols of directory and file names are same for windows,linux and macos systems?
+ * var check
  * directory and file existance check
  * cleanup
  * length check
