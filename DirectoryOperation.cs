@@ -22,35 +22,6 @@
             while (true);
         }
 
-        internal static List<DtoFileInfo> GetAllFiles(string directory)
-        {
-            
-            var answer = new List<DtoFileInfo>();
-            var allSubdirectories = Directory.GetDirectories(directory);
-            
-            if (allSubdirectories.Length != 0)
-            {
-                foreach (var subdirectory in allSubdirectories)
-                {
-                    try
-                    {
-                        answer.AddRange(GetAllFiles(subdirectory));
-                    }
-                    catch(Exception)
-                    {
-                    }
-                }
-            }
-            var directoryInfo = new DirectoryInfo(directory);
-            FileInfo[] files = directoryInfo.GetFiles();
-            foreach (var file in files)
-            {
-                answer.Add(new DtoFileInfo(file));
-            }
-
-            return answer;
-        }
-
         internal static string[,] GetBiggestFiles(List<DtoFileInfo> incomingFiles)
         {
             var maxSampleSize = 10; //according to task
@@ -112,7 +83,7 @@
             var maxSampleSize = 10; //according to task
             var answerSize = Math.Min(incomingFiles.Count, maxSampleSize);
 
-            var tenOldestFiles = Enumerable.Repeat(new DtoFileInfo(), answerSize).ToArray();
+            var tenOldestFiles = incomingFiles.Take(answerSize).ToArray();
             var newestFileDate = DateTime.MaxValue;
             int newestFileId = 0;
             foreach (var file in incomingFiles)

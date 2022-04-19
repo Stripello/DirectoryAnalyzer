@@ -10,10 +10,6 @@ internal class DtoFileInfo
 
     internal DtoFileInfo()
     {
-        name = "stub_name";
-        extension = "stub_extension";
-        size = 0;
-        changedate = DateTime.MaxValue;
     }
     internal DtoFileInfo(FileInfo incomingFileInfo)
     {
@@ -54,12 +50,11 @@ internal class DtoFileInfo
     internal static DtoFileInfo Parse(string stringToParse)
     {
         var temp = stringToParse.Split('*');
-        var answer = new DtoFileInfo();
-        answer.name = temp[0];
-        answer.extension = temp[1];
-        answer.size = long.Parse(temp[2]);
-        answer.changedate = DateTime.Parse(temp[3]);
-        return answer;
+        var name = temp[0];
+        var extension = temp[1];
+        var size = long.Parse(temp[2]);
+        var changedate = DateTime.Parse(temp[3]);
+        return new DtoFileInfo() { name = name, extension = extension, size = size, changedate = changedate};
     }
 
 
