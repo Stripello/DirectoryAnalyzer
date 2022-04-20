@@ -11,7 +11,7 @@ var requestedDirectoryDB = new DirectoriesDataBase(dir);
 
 Console.WriteLine("Uploading searchlog.");
 var storedDirectoryDB = DirectoriesDataBase.ReadFromFile();
-var compareResults = DirectoriesDataBase.Comparator(storedDirectoryDB,requestedDirectoryDB);
+var compareResults = DirectoriesDataBase.Comparator(storedDirectoryDB, requestedDirectoryDB);
 
 Console.WriteLine("Uploading data of files represented in data base.");
 var knownFiles = FilesDataBase.ReadFromFile(compareResults.represented);
@@ -24,7 +24,7 @@ var DtoToAnalyze = FilesDataBase.GetDtoFileInfos(knownFiles, unknownFiles);
 
 Console.WriteLine("Analysing files.");
 var sb = new StringBuilder();
-sb.AppendJoin("\n",TableOperator.BuildTable(DirectoryOperation.GetBiggestFiles(DtoToAnalyze)));
+sb.AppendJoin("\n", TableOperator.BuildTable(DirectoryOperation.GetBiggestFiles(DtoToAnalyze)));
 sb.Append("\n");
 sb.AppendJoin("\n", TableOperator.BuildTable(DirectoryOperation.GetOldestFiles(DtoToAnalyze)));
 sb.Append("\n");
@@ -38,20 +38,6 @@ FilesDataBase.AddToFile(unknownFiles);
 Console.WriteLine("Modifying succeed. Now you can close process.");
 
 /* TODO
- * change DTOFileInfo - delete all info about directory
- * FSNode by lambda sentence
- * change FsNode
- * change merging two dictionaries
- * big directories
+ * optimize search in log
  * fancy крутилко
- * directory = volumename exception
- * FileSystem.Parse add divider by parts 
- * FileSystem.GetOnlyChild could be optimized
- * ModifyLog - finish
- * 
- * var check
- * directory and file existance check
- * cleanup
- * length check
- * accessability check
  */

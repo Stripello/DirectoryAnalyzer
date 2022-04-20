@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <Folder Include="DB\" />
+    <Folder Include="LocalDB\" />
   </ItemGroup>
 
 </Project>

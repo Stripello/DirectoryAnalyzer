@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
+﻿using System.Text;
 
 namespace DirectoryAnalyzer
 {
@@ -23,15 +18,15 @@ namespace DirectoryAnalyzer
             files = new Dictionary<string, List<DtoFileInfo>>();
             foreach (var directory in listOfDirectories)
             {
-                var fileEnum = Directory.EnumerateFiles(directory, "*", new EnumerationOptions 
-                { 
+                var fileEnum = Directory.EnumerateFiles(directory, "*", new EnumerationOptions
+                {
                     IgnoreInaccessible = true,
                     RecurseSubdirectories = false
                 });
                 var dtoList = new List<DtoFileInfo>() { };
                 foreach (var filePath in fileEnum)
                 {
-                    dtoList.Add(new DtoFileInfo(filePath) );
+                    dtoList.Add(new DtoFileInfo(filePath));
                 }
                 files.TryAdd(directory, dtoList);
             }
@@ -43,9 +38,10 @@ namespace DirectoryAnalyzer
         /// <returns></returns>
         internal static FilesDataBase? ReadFromFile(List<string> requestedDirectories)
         {
-            var answer = new Dictionary<string,List<DtoFileInfo>>();
+            var answer = new Dictionary<string, List<DtoFileInfo>>();
             var DS = Path.DirectorySeparatorChar;
-            var directoryDb = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + $"{DS}LocalDB";
+            var directoryDb = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName
+                + $"{DS}LocalDB";
             Directory.CreateDirectory(directoryDb);
             var DataBaseDirectoryFile = directoryDb + $"{DS}FilesDB.txt";
             if (!File.Exists(DataBaseDirectoryFile))
@@ -57,15 +53,16 @@ namespace DirectoryAnalyzer
             {
                 var fileContent = File.ReadAllLines(DataBaseDirectoryFile);
                 var keyForDictionary = String.Empty;        //correct init empty string??
-                
+
                 for (int i = 0; i < fileContent.Length;)
                 {
                     var listTempDTO = new List<DtoFileInfo> { };
-                    if (fileContent[i].StartsWith("$") && requestedDirectories.Contains(fileContent[i].Substring(1)) )
+                    if (fileContent[i].StartsWith("$") && requestedDirectories.Contains(fileContent[i].
+                        Substring(1)))
                     {
                         keyForDictionary = fileContent[i].Substring(1);
                         //check for directory without files or end of DB file
-                        if (i >= fileContent.Length - 1 || fileContent[i + 1].StartsWith("$")) 
+                        if (i >= fileContent.Length - 1 || fileContent[i + 1].StartsWith("$"))
                         {
                             listTempDTO = new List<DtoFileInfo>(0);
                             i++;
@@ -85,18 +82,17 @@ namespace DirectoryAnalyzer
                         {
                             Console.WriteLine($"FilesDataBase parsing issues, string {i}");
                         }
-                        
+
                     }
                     else
                     {
                         i++;
                     }
-                    
                 }
                 return new FilesDataBase() { files = answer };
             }
         }
-        
+
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -115,8 +111,8 @@ namespace DirectoryAnalyzer
         {
             List<string> directories = new List<string>();
             var DS = Path.DirectorySeparatorChar;
-            var DataBaseDirectoryFile = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName +
-               $"{DS}LocalDB{DS}FilesDB.txt";
+            var DataBaseDirectoryFile = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.
+                Parent.FullName + $"{DS}LocalDB{DS}FilesDB.txt";
             File.AppendAllText(DataBaseDirectoryFile, filesDataBase.ToString());
         }
 
@@ -138,10 +134,8 @@ namespace DirectoryAnalyzer
                         {
                             answer.AddRange(filesInDirectory);
                         }
-
                     }
                 }
-                
             }
             return answer;
         }

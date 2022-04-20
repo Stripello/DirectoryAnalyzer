@@ -4,8 +4,8 @@ namespace DirectoryAnalyzer
 {
     internal class DirectoriesDataBase
     {
-        internal List<string> directories = new List<string> {""};
-        
+        internal List<string> directories = new List<string> { "" };
+
         /// <summary>
         /// it's debateable 
         /// </summary>
@@ -17,7 +17,7 @@ namespace DirectoryAnalyzer
         {
             if (Directory.Exists(directory))
             {
-                directories=new List<string>();
+                directories = new List<string>();
                 directories = Directory.EnumerateDirectories(directory, "*", new EnumerationOptions
                 {
                     IgnoreInaccessible = true,
@@ -36,7 +36,8 @@ namespace DirectoryAnalyzer
         {
             List<string> directories = new List<string>();
             var DS = Path.DirectorySeparatorChar;
-            var directoryDb = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + $"{DS}LocalDB";
+            var directoryDb = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName
+                + $"{DS}LocalDB";
             if (!Directory.Exists(directoryDb))
             {
                 Directory.CreateDirectory(directoryDb);
@@ -50,7 +51,7 @@ namespace DirectoryAnalyzer
             else
             {
                 var fileContent = File.ReadAllLines(DataBaseDirectoryFile);
-                return new DirectoriesDataBase() {directories = fileContent.ToList() };
+                return new DirectoriesDataBase() { directories = fileContent.ToList() };
             }
         }
 
@@ -66,7 +67,8 @@ namespace DirectoryAnalyzer
         /// </summary>
         /// <param name="directoriesToCompare"></param>
         /// <returns></returns>
-        internal static (List<string>? represented, List<string>? notRepresented) Comparator(DirectoriesDataBase whatWeGot, DirectoriesDataBase whatWeNeed)
+        internal static (List<string>? represented, List<string>? notRepresented) Comparator
+            (DirectoriesDataBase whatWeGot, DirectoriesDataBase whatWeNeed)
         {
             if (whatWeGot == null)
             {
@@ -78,10 +80,11 @@ namespace DirectoryAnalyzer
             }
 
             var directories = whatWeGot.directories;
-            
+
             List<string> represented = new();
-            List<string> notRepresented = new ();
-            foreach (var directory in whatWeNeed.directories) //must be really slow and definitly C# got standarth method for this
+            List<string> notRepresented = new();
+            foreach (var directory in whatWeNeed.directories) 
+            //^must be really slow and definitly C# got standarth method for this
             {
                 if (directories.Contains(directory))
                 {
@@ -99,8 +102,8 @@ namespace DirectoryAnalyzer
         {
             List<string> directories = new List<string>();
             var DS = Path.DirectorySeparatorChar;
-            var DataBaseDirectoryFile = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName+
-               $"{DS}LocalDB{DS}DirectoriesDB.txt";
+            var DataBaseDirectoryFile = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.
+                FullName + $"{DS}LocalDB{DS}DirectoriesDB.txt";
             File.AppendAllLines(DataBaseDirectoryFile, stringsToAdd);
         }
     }

@@ -27,7 +27,7 @@
             var maxSampleSize = 10; //according to task
             var answerSize = Math.Min(incomingFiles.Count, maxSampleSize);
 
-            var tenBiggestFiles = Enumerable.Repeat(new DtoFileInfo(),answerSize).ToArray();
+            var tenBiggestFiles = Enumerable.Repeat(new DtoFileInfo(), answerSize).ToArray();
             long smallestSizeInSample = 0;
             int smallestItemID = 0;
             foreach (var file in incomingFiles)
@@ -46,12 +46,12 @@
             Array.Reverse(tenBiggestFiles);
 
             var amountOfColumns = 2;
-            var answer = new string[answerSize +1, amountOfColumns];
+            var answer = new string[answerSize + 1, amountOfColumns];
             answer[0, 0] = "file name"; //header of output table
             answer[0, 1] = "file size";
             for (int i = 0; i < answerSize; i++)
             {
-                answer[i+1, 0] = tenBiggestFiles[i].name;
+                answer[i + 1, 0] = tenBiggestFiles[i].name;
                 var currentItemSize = tenBiggestFiles[i].size;
 
                 switch (currentItemSize)
@@ -85,7 +85,7 @@
 
             var tenOldestFiles = incomingFiles.Take(answerSize).ToArray();
             var newestFileDate = DateTime.MaxValue;
-            int newestFileId = 0;
+            var newestFileId = 0;
             foreach (var file in incomingFiles)
             {
                 var currentFileChangeDate = file.changedate;
@@ -121,7 +121,7 @@
             {
                 string currentFileExtension = file.extension;
                 var searchedElement = listOfExtensions.IndexOf(currentFileExtension);
-                
+
                 if (searchedElement == -1)
                 {
                     listOfExtensions.Add(currentFileExtension);
@@ -140,12 +140,12 @@
                 gotRelocateThisTurn = false;
                 for (int i = 0; i < amountOfExtensions - 1; i++)
                 {
-                    if (listOfAmountOfExtensions[i] < listOfAmountOfExtensions[i+1])
+                    if (listOfAmountOfExtensions[i] < listOfAmountOfExtensions[i + 1])
                     {
                         (listOfAmountOfExtensions[i + 1], listOfAmountOfExtensions[i]) =
                             (listOfAmountOfExtensions[i], listOfAmountOfExtensions[i + 1]);
 
-                        (listOfExtensions[i + 1], listOfExtensions[i]) = 
+                        (listOfExtensions[i + 1], listOfExtensions[i]) =
                             (listOfExtensions[i], listOfExtensions[i + 1]);
 
                         gotRelocateThisTurn = true;

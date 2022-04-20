@@ -54,7 +54,13 @@ internal class DtoFileInfo
         var extension = temp[1];
         var size = long.Parse(temp[2]);
         var changedate = DateTime.Parse(temp[3]);
-        return new DtoFileInfo() { name = name, extension = extension, size = size, changedate = changedate};
+        return new DtoFileInfo() 
+        {
+            name = name, 
+            extension = extension, 
+            size = size, 
+            changedate = changedate 
+        };
     }
 
 
