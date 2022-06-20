@@ -1,0 +1,10 @@
+.vs/
+*.bin
+*.obj
+**/packages
+**/obj
+**/bin
+**/Log/log.txt
+**/Log/Meta.txt
+**/Log/Log.txt
+**/MyDB.db
