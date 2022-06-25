@@ -3,7 +3,7 @@ using DirectoryAnalyzer.Models;
 
 namespace DirectoryOperationServices
 {
-    
+
     public static class DirectoryOperation
     {
         internal static IList<MyFileInfo> GetAllFiles(IList<MyFileSystemNode> incomingFS)
@@ -138,18 +138,19 @@ namespace DirectoryOperationServices
         //and different checksum for file with same data and different metadata
         public static IList<IList<MyFileInfo>> GetCopies(IList<MyFileInfo> incomingFiles)
         {
-            const int minimalSize = 1024;
+            const int minimalSize = 67108864;
             incomingFiles = incomingFiles.Where(x => x.Size > minimalSize).OrderBy(x => x.Size).ToList();
-            var answer = new List<IList<MyFileInfo>>();
-            for (int i = 0; i < incomingFiles.Count()-1;)
+            //#linq
+            var preliminaryAnswer = new List<IList<MyFileInfo>>();
+            for (int i = 0; i < incomingFiles.Count() - 1;)
             {
                 if (incomingFiles[i].Size == incomingFiles[i + 1].Size)
                 {
-                    answer.Add(new List<MyFileInfo> { incomingFiles[i], incomingFiles[i + 1] });
+                    preliminaryAnswer.Add(new List<MyFileInfo> { incomingFiles[i], incomingFiles[i + 1] });
                     i++;
-                    while (i < incomingFiles.Count()-1 && incomingFiles[i].Size == incomingFiles[i+1].Size)
+                    while (i < incomingFiles.Count() - 1 && incomingFiles[i].Size == incomingFiles[i + 1].Size)
                     {
-                        answer.Last().Add(incomingFiles[i + 1]);
+                        preliminaryAnswer.Last().Add(incomingFiles[i + 1]);
                         i++;
                     }
                 }
@@ -158,69 +159,52 @@ namespace DirectoryOperationServices
                     i++;
                 }
             }
-            var amountOfGroupsInAnswer = answer.Count();
-            const int sliceSize = 8;
-            for (int i = 0; i < amountOfGroupsInAnswer; i++)
+            var length = preliminaryAnswer.Count;
+            var answer = new List<IList<MyFileInfo>>();
+            for (int i = 0; i < length; i++)
             {
-                var currentList = answer[0];
-                var currentListFilesSize = currentList[0].Size;
-                var currentCheckSummArray = new List<long>();
-                foreach (var element in currentList)
-                {
-                    long iterations = currentListFilesSize / sliceSize;
-                    iterations = currentListFilesSize%sliceSize ==0 ? iterations : iterations + 1;
-                    long checkSum = 0;
+                answer.AddRange(CheckSumGrouping(preliminaryAnswer[i]));
+            }
+            return answer;
+        }
 
-                    using (FileStream fs2 =File.OpenRead(element.Name))
+        public static IList<IList<MyFileInfo>> CheckSumGrouping(IList<MyFileInfo> myFileInfos)
+        {
+            const int sliceSize = 8;
+            var auxList = new List<(MyFileInfo, long)>();
+            foreach (var element in myFileInfos)
+            {
+                long iterations = element.Size / sliceSize;
+                iterations = element.Size % sliceSize == 0 ? iterations : iterations + 1;
+                long checkSum = 0;
+                using (FileStream fs2 = File.OpenRead(element.Name))
+                {
+                    byte[] currentSlice = new byte[sliceSize];
+                    for (int j = 0; j < iterations; j++)
                     {
-                        byte[] currentSlice = new byte[sliceSize];
+                        fs2.Read(currentSlice, 0, sliceSize);
+                        checkSum += BitConverter.ToInt64(currentSlice, 0);
+                    }
+                }
+                auxList.Add((element, checkSum));
+            }
+            var answer = from element in auxList
+                         group element by element.Item2;
 
-                        for (int j = 0; j < iterations; j++)
-                        {
-                            fs2.Read(currentSlice, 0, sliceSize);
-                            checkSum += BitConverter.ToInt64(currentSlice, 0);
-                        }
-                    }
-                    currentCheckSummArray.Add(checkSum);
-                }
-                if (currentCheckSummArray.All(x => x == currentCheckSummArray[0]))
+            var finalAnswer = new List<IList<MyFileInfo>>() { };
+            foreach (var element in answer)
+            {
+                if (element.Count() > 1)
                 {
-                    continue;
-                }
-                else
-                {
-                    answer.RemoveAt(0);
-                    var auxArray = new List<(long, int)>();
-                    for (int k = 0; k < currentCheckSummArray.Count(); k++)
-                    {
-                        auxArray.Add(new (currentCheckSummArray[k],k));
-                    }
-                    auxArray=auxArray.OrderBy(x=>x.Item1).ToList();
-                    var counter = 0;
-                    var tempCheckSum = auxArray[0].Item1;
                     var tempList = new List<MyFileInfo>();
-                    while (counter <auxArray.Count())
+                    foreach (var subel in element)
                     {
-                        counter++;
-                        if (tempCheckSum != auxArray[counter].Item1)
-                        {
-                            tempCheckSum = auxArray[counter].Item1;
-                            if (tempList.Count > 1)
-                            {
-                                answer.Add(tempList);
-                            }
-                            tempList.Clear();
-                        }
-                        else
-                        {
-                            tempList.Add(currentList[auxArray[counter].Item2]);
-                        }
+                        tempList.Add(subel.Item1);
                     }
+                    finalAnswer.Add(tempList);
                 }
             }
-            
-
-            return answer;
+            return finalAnswer;
         }
     }
 }
