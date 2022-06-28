@@ -23,7 +23,7 @@ namespace DirectoryOperationServices
             return incomingFiles.OrderBy(x => x.Size).Reverse().Take(answerSize).ToList();
         }
 
-        internal static IList<MyFileInfo> GetOldestFiles(IList<MyFileInfo> incomingFiles)
+        public static IList<MyFileInfo> GetOldestFiles(IList<MyFileInfo> incomingFiles)
         {
             var maxSampleSize = 10; //according to task
             var answerSize = Math.Min(incomingFiles.Count, maxSampleSize);

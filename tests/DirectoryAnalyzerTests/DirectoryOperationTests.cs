@@ -41,6 +41,7 @@ public class DirectoryOperationTests
 		// Act
 		var actual = DirectoryOperation.GetBiggestFiles(testData);
 
+		//Assert
 		Assert.Equal(0, actual.Count);
 	}
 	
@@ -51,9 +52,9 @@ public class DirectoryOperationTests
 	}
     #endregion
 
-    #region GetCopies
+    #region GetCopiesTests
 	[Fact]
-    public void GetCopies_threeCopies_Succeed()
+    public void GetCopies_threeAndTwoCopies_Succeed()
     {
 		//Arrange
 		var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData\\";
@@ -103,5 +104,51 @@ public class DirectoryOperationTests
     }
 	#endregion
 
+	#region GetOldestFilesTests
+	[Fact]
+	public void GetOldestFiles_RandomFiles_Succeed()
+    {
+		//Arrange
+		var random = new Random();
+		var testData = new List<MyFileInfo>();
+		const int testCases = 10000;
+		for (int i = 0; i < testCases; i++)
+        {
+			var randomDate = new DateTime(random.Next(1980,2023),random.Next(1,13),random.Next(1,28));
+			testData.Add(new MyFileInfo() { Changedate = randomDate});
+        }
 
+		//Act
+		var actual = DirectoryOperation.GetOldestFiles(testData);
+		var actualIsOrdered = true;
+		for (int i = 0; i < actual.Count - 1; i++)
+        {
+			if (actual[i].Changedate > actual[i + 1].Changedate)
+            {
+				actualIsOrdered = false;
+				break;
+            }
+        }
+
+		//Assert
+		Assert.True(actualIsOrdered);
+    }
+	[Fact]
+    public void GetOldestFiles_EmptyData_Succeed()
+    {
+		// Arrange
+		var testData = new List<MyFileInfo>();
+
+		// Act
+		var actual = DirectoryOperation.GetOldestFiles(testData);
+
+		//Assert
+		Assert.Equal(0, actual.Count);
+	}
+	[Fact]
+	public void GetOldestFiles_InvalidData_Fail()
+    {
+		Assert.Throws<NullReferenceException>(() => DirectoryOperation.GetOldestFiles(null));
+	}
+	#endregion
 }
