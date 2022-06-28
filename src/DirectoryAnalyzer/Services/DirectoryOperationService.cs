@@ -31,55 +31,19 @@ namespace DirectoryOperationServices
         //need to be completely rebuild for purpose of unit tests
         internal static string[,] GetFrequentExtension(IList<MyFileInfo> incomingFiles)
         {
-            var listOfExtensions = new List<string>();
-            var listOfAmountOfExtensions = new List<int>();
-
-            foreach (var file in incomingFiles)
+            const int sampleSize = 10;
+            var auxList = (from file in incomingFiles
+                          group file by file.Extension into g
+                          let amount = g.Count()
+                          orderby amount descending
+                          select new {Value = g.Key, Amount = amount }).ToList().Take(sampleSize);
+            var answer = new string[auxList.Count(),2];
+            var i = 0;
+            foreach (var el in auxList)
             {
-                string currentFileExtension = file.Extension;
-                var searchedElement = listOfExtensions.IndexOf(currentFileExtension);
-
-                if (searchedElement == -1)
-                {
-                    listOfExtensions.Add(currentFileExtension);
-                    listOfAmountOfExtensions.Add(1);
-                }
-                else
-                {
-                    listOfAmountOfExtensions[searchedElement]++;
-                }
-            }
-
-            int amountOfExtensions = listOfExtensions.Count;
-            bool gotRelocateThisTurn;
-            do
-            {
-                gotRelocateThisTurn = false;
-                for (int i = 0; i < amountOfExtensions - 1; i++)
-                {
-                    if (listOfAmountOfExtensions[i] < listOfAmountOfExtensions[i + 1])
-                    {
-                        (listOfAmountOfExtensions[i + 1], listOfAmountOfExtensions[i]) =
-                            (listOfAmountOfExtensions[i], listOfAmountOfExtensions[i + 1]);
-
-                        (listOfExtensions[i + 1], listOfExtensions[i]) =
-                            (listOfExtensions[i], listOfExtensions[i + 1]);
-
-                        gotRelocateThisTurn = true;
-                    }
-                }
-            }
-            while (gotRelocateThisTurn == true);
-
-            var maxSampleSize = 10;
-            var answerSize = Math.Min(maxSampleSize, amountOfExtensions);
-            var answer = new string[answerSize + 1, 2]; // ( + 1 to inseart headder of the table)
-            answer[0, 0] = "extension";
-            answer[0, 1] = "number of appearances";
-            for (int i = 0; i < answerSize; i++)
-            {
-                answer[i + 1, 0] = listOfExtensions[i];
-                answer[i + 1, 1] = listOfAmountOfExtensions[i].ToString();
+                answer[0, i] = el.Value;
+                answer[1, i] = el.Amount.ToString();
+                i++;
             }
             return answer;
         }
