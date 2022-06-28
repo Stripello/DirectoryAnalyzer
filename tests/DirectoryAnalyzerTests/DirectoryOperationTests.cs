@@ -48,7 +48,7 @@ public class DirectoryOperationTests
 	[Fact]
 	public void GetBiggestFiles_InvalidData_Failed()
 	{
-		Assert.Throws<NullReferenceException>(() => DirectoryOperation.GetBiggestFiles(null));
+		Assert.Throws<ArgumentNullException>(() => DirectoryOperation.GetBiggestFiles(null));
 	}
     #endregion
 
@@ -148,7 +148,7 @@ public class DirectoryOperationTests
 	[Fact]
 	public void GetOldestFiles_InvalidData_Fail()
     {
-		Assert.Throws<NullReferenceException>(() => DirectoryOperation.GetOldestFiles(null));
+		Assert.Throws<ArgumentNullException>(() => DirectoryOperation.GetOldestFiles(null));
 	}
 	#endregion
 }

@@ -18,16 +18,14 @@ namespace DirectoryOperationServices
 
         public static IList<MyFileInfo> GetBiggestFiles(IList<MyFileInfo> incomingFiles)
         {
-            var maxSampleSize = 10; //according to task
-            var answerSize = Math.Min(incomingFiles.Count, maxSampleSize);
-            return incomingFiles.OrderBy(x => x.Size).Reverse().Take(answerSize).ToList();
+            const int maxSampleSize = 10; //according to task
+            return incomingFiles.OrderBy(x => x.Size).Reverse().Take(maxSampleSize).ToList();
         }
 
         public static IList<MyFileInfo> GetOldestFiles(IList<MyFileInfo> incomingFiles)
         {
-            var maxSampleSize = 10; //according to task
-            var answerSize = Math.Min(incomingFiles.Count, maxSampleSize);
-            return incomingFiles.OrderBy(x => x.Changedate).Take(answerSize).ToArray();
+            const int maxSampleSize = 10; //according to task
+            return incomingFiles.OrderBy(x => x.Changedate).Take(maxSampleSize).ToArray();
         }
 
         //need to be completely rebuild for purpose of unit tests
