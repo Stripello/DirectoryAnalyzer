@@ -134,11 +134,9 @@ namespace DirectoryOperationServices
             }
             return tableToReturn;
         }
-        //possible to make complieance throgh checksum, but there is issues with performance on big files
-        //and different checksum for file with same data and different metadata
-        public static IList<IList<MyFileInfo>> GetCopies(IList<MyFileInfo> incomingFiles)
+        //possible to make different checksum for file with same data and different metadata
+        public static IList<IList<MyFileInfo>> GetCopies(IList<MyFileInfo> incomingFiles, long minimalSize = 67108864)
         {
-            const int minimalSize = 67108864;
             incomingFiles = incomingFiles.Where(x => x.Size > minimalSize).OrderBy(x => x.Size).ToList();
             //#linq
             var preliminaryAnswer = new List<IList<MyFileInfo>>();

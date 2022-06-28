@@ -56,26 +56,21 @@ public class DirectoryOperationTests
     public void GetCopies_threeCopies_Succeed()
     {
 		//Arrange
+		var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData\\";
 		var testData = new List<MyFileInfo>();
-		testData.Add(new MyFileInfo() { Name = "copy", Extension = ".bin", Size = 42*1024 });
-		testData.Add(new MyFileInfo() { Size = 1025 });
-		testData.Add(new MyFileInfo() { Size = 20000 });
-		testData.Add(new MyFileInfo() { Size = 0 });
-		testData.Add(new MyFileInfo() { Size = 0 });
-		testData.Add(new MyFileInfo() { Size = 1026 });
-		testData.Add(new MyFileInfo() { Size = 1027 });
-		testData.Add(new MyFileInfo() { Size = 1028 });
-		testData.Add(new MyFileInfo() { Name = "copy", Extension = ".bin", Size = 42 * 1024 });
-		testData.Add(new MyFileInfo() { Size = 3*256*256 });
-		testData.Add(new MyFileInfo() { Size = 4 * 256 * 256 });
-		testData.Add(new MyFileInfo() { Size = 5 * 256 * 256 });
-		testData.Add(new MyFileInfo() { Size = 6 * 256 * 256 });
-		testData.Add(new MyFileInfo() { Size = 7* 256 * 256 });
-		testData.Add(new MyFileInfo() { Name = "copy", Extension = ".bin", Size = 42 * 1024 });
+		testData.Add(new MyFileInfo(directory + "0.txt"));
+		testData.Add(new MyFileInfo(directory + "1.txt"));
+		testData.Add(new MyFileInfo(directory + "2.txt"));
+		testData.Add(new MyFileInfo(directory + "3.txt"));
+		testData.Add(new MyFileInfo(directory + "4.txt"));
+		testData.Add(new MyFileInfo(directory + "5.txt"));
+		testData.Add(new MyFileInfo(directory + "6.txt"));
+		testData.Add(new MyFileInfo(directory + "7.txt"));
 		//Act
-		var actual = DirectoryOperation.GetCopies(testData);
+		var actual = DirectoryOperation.GetCopies(testData,0);
 		//Assert
-		Assert.Equal(actual,new List<List<MyFileInfo>>() { new List<MyFileInfo> { testData[0],testData[8],testData[14]} });
+		Assert.Equal(actual,new List<List<MyFileInfo>>() { new List<MyFileInfo> { testData[5],testData[6]}
+		, new List<MyFileInfo> { testData[1],testData[2],testData[4]} });
 	}
 
 	[Fact]
