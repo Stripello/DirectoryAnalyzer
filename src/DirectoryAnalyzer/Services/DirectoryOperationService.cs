@@ -36,12 +36,12 @@ namespace DirectoryOperationServices
                           group file by file.Extension into g
                           let amount = g.Count()
                           orderby amount descending
-                          select new {Value = g.Key, Amount = amount }).ToList().Take(sampleSize);
+                          select new {Extension = g.Key, Amount = amount }).ToList().Take(sampleSize);
             var answer = new string[auxList.Count(),2];
             var i = 0;
             foreach (var el in auxList)
             {
-                answer[0, i] = el.Value;
+                answer[0, i] = el.Extension.ToString();
                 answer[1, i] = el.Amount.ToString();
                 i++;
             }
