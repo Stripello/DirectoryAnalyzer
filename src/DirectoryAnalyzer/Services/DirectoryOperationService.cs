@@ -28,7 +28,7 @@ namespace DirectoryOperationServices
             return incomingFiles.OrderBy(x => x.Changedate).Take(maxSampleSize).ToArray();
         }
 
-        //need to be completely rebuild for purpose of unit tests
+        //UT
         internal static string[,] GetFrequentExtension(IList<MyFileInfo> incomingFiles)
         {
             const int sampleSize = 10;
@@ -36,13 +36,14 @@ namespace DirectoryOperationServices
                           group file by file.Extension into g
                           let amount = g.Count()
                           orderby amount descending
-                          select new {Extension = g.Key, Amount = amount }).ToList().Take(sampleSize);
+                          select new {Extension = g.Key, Amount = amount })
+                          .Take(sampleSize).ToList();
             var answer = new string[auxList.Count(),2];
             var i = 0;
             foreach (var el in auxList)
             {
-                answer[0, i] = el.Extension.ToString();
-                answer[1, i] = el.Amount.ToString();
+                answer[i, 0] = el.Extension.ToString();
+                answer[i, 1] = el.Amount.ToString();
                 i++;
             }
             return answer;
