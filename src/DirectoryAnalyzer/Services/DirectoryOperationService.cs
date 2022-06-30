@@ -29,7 +29,7 @@ namespace DirectoryOperationServices
         }
 
         //UT
-        internal static string[,] GetFrequentExtension(IList<MyFileInfo> incomingFiles)
+        internal static string[,] GetFrequentExtension(IEnumerable<MyFileInfo> incomingFiles)
         {
             const int sampleSize = 10;
             var auxList = (from file in incomingFiles
@@ -38,8 +38,10 @@ namespace DirectoryOperationServices
                           orderby amount descending
                           select new {Extension = g.Key, Amount = amount })
                           .Take(sampleSize).ToList();
-            var answer = new string[auxList.Count(),2];
-            var i = 0;
+            var answer = new string[auxList.Count()+1,2];
+            answer[0,0] = "Extension";
+            answer[0, 1] = "Amount of files";
+            var i = 1;
             foreach (var el in auxList)
             {
                 answer[i, 0] = el.Extension.ToString();

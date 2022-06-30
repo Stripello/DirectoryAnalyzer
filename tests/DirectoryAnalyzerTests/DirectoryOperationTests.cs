@@ -6,8 +6,8 @@ namespace DirectoryAnalyzerTests;
 
 public class DirectoryOperationTests
 {
-    #region GetBiggestFilesTests
-    [Fact]
+	#region GetBiggestFilesTests
+	[Fact]
 	public void GetBiggestFiles_RandomFiles_Succeed()
 	{
 		// Arrange
@@ -18,44 +18,44 @@ public class DirectoryOperationTests
 		for (var i = 0; i < testDataLength; i++)
 		{
 			temp = random.Next(1024 * 1024 * 3);
-			testData.Add(new MyFileInfo() { Name = $"plugName{i}",Size = temp});
+			testData.Add(new MyFileInfo() { Name = $"plugName{i}", Size = temp });
 		}
-		
+
 		// Act
 		var actual = DirectoryOperation.GetBiggestFiles(testData);
 
 		// Assert
 		for (var i = 0; i < actual.Count - 1; i++)
-        {
+		{
 			Assert.True(actual[i].Size >= actual[i + 1].Size);
 		}
-			
+
 	}
-	
+
 	[Fact]
 	public void GetBiggestFiles_EmptyFiles_Succeed()
 	{
 		// Arrange
 		var testData = new List<MyFileInfo>();
-		
+
 		// Act
 		var actual = DirectoryOperation.GetBiggestFiles(testData);
 
 		//Assert
 		Assert.Equal(0, actual.Count);
 	}
-	
+
 	[Fact]
 	public void GetBiggestFiles_InvalidData_Failed()
 	{
 		Assert.Throws<ArgumentNullException>(() => DirectoryOperation.GetBiggestFiles(null));
 	}
-    #endregion
+	#endregion
 
-    #region GetCopiesTests
+	#region GetCopiesTests
 	[Fact]
-    public void GetCopies_threeAndTwoCopies_Succeed()
-    {
+	public void GetCopies_threeAndTwoCopies_Succeed()
+	{
 		//Arrange
 		var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData\\";
 		var testData = new List<MyFileInfo>();
@@ -68,9 +68,9 @@ public class DirectoryOperationTests
 		testData.Add(new MyFileInfo(directory + "6.txt"));
 		testData.Add(new MyFileInfo(directory + "7.txt"));
 		//Act
-		var actual = DirectoryOperation.GetCopies(testData,0);
+		var actual = DirectoryOperation.GetCopies(testData, 0);
 		//Assert
-		Assert.Equal(actual,new List<List<MyFileInfo>>() { new List<MyFileInfo> { testData[5],testData[6]}
+		Assert.Equal(actual, new List<List<MyFileInfo>>() { new List<MyFileInfo> { testData[5],testData[6]}
 		, new List<MyFileInfo> { testData[1],testData[2],testData[4]} });
 	}
 
@@ -95,47 +95,47 @@ public class DirectoryOperationTests
 		//Act
 		var actual = DirectoryOperation.GetCopies(testData);
 		//Assert
-		Assert.Equal(actual, new List<List<MyFileInfo>>() {});
+		Assert.Equal(actual, new List<List<MyFileInfo>>() { });
 	}
 	[Fact]
 	public void GetCopies_invalidData_Failed()
-    {
+	{
 		Assert.Throws<ArgumentNullException>(() => DirectoryOperation.GetCopies(null));
-    }
+	}
 	#endregion
 
 	#region GetOldestFilesTests
 	[Fact]
 	public void GetOldestFiles_RandomFiles_Succeed()
-    {
+	{
 		//Arrange
 		var random = new Random();
 		var testData = new List<MyFileInfo>();
 		const int testCases = 10000;
 		for (int i = 0; i < testCases; i++)
-        {
-			var randomDate = new DateTime(random.Next(1980,2023),random.Next(1,13),random.Next(1,28));
-			testData.Add(new MyFileInfo() { Changedate = randomDate});
-        }
+		{
+			var randomDate = new DateTime(random.Next(1980, 2023), random.Next(1, 13), random.Next(1, 28));
+			testData.Add(new MyFileInfo() { Changedate = randomDate });
+		}
 
 		//Act
 		var actual = DirectoryOperation.GetOldestFiles(testData);
 		var actualIsOrdered = true;
 		for (int i = 0; i < actual.Count - 1; i++)
-        {
+		{
 			if (actual[i].Changedate > actual[i + 1].Changedate)
-            {
+			{
 				actualIsOrdered = false;
 				break;
-            }
-        }
+			}
+		}
 
 		//Assert
 		Assert.True(actualIsOrdered);
-    }
+	}
 	[Fact]
-    public void GetOldestFiles_EmptyData_Succeed()
-    {
+	public void GetOldestFiles_EmptyData_Succeed()
+	{
 		// Arrange
 		var testData = new List<MyFileInfo>();
 
@@ -147,8 +147,31 @@ public class DirectoryOperationTests
 	}
 	[Fact]
 	public void GetOldestFiles_InvalidData_Fail()
-    {
+	{
 		Assert.Throws<ArgumentNullException>(() => DirectoryOperation.GetOldestFiles(null));
 	}
+	#endregion
+
+	#region GetFrequentExtension
+	[Fact]
+    public void GetFrequentExtension_RandomExtensions_Succed()
+    {
+		//Arrange
+		var randomizer = new Random();
+		const int testObjects = 10000;
+		var testData = Enumerable.Repeat(new MyFileInfo(),testObjects);
+		for (int i = 0; i < testObjects; i++)
+        {
+			var currentRandomValue = randomizer.Next(20);
+            switch (currentRandomValue)
+            {
+
+            }
+        }
+
+        //Act
+
+        //Assert
+    }
 	#endregion
 }
