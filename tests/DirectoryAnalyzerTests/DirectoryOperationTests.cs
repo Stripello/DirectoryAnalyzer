@@ -159,19 +159,199 @@ public class DirectoryOperationTests
 		//Arrange
 		var randomizer = new Random();
 		const int testObjects = 10000;
-		var testData = Enumerable.Repeat(new MyFileInfo(),testObjects);
+		var testData = Enumerable.Repeat(new MyFileInfo(),testObjects).ToList();
 		for (int i = 0; i < testObjects; i++)
         {
-			var currentRandomValue = randomizer.Next(20);
+			var currentRandomValue = randomizer.Next(31);
             switch (currentRandomValue)
             {
-
+                case 0:
+					testData[i].Extension = ".zip";
+					break;
+				case 1:
+					testData[i].Extension = ".xps";
+					break;
+				case 2:
+					testData[i].Extension = ".bin";
+					break;
+				case 3:
+					testData[i].Extension = ".xltm";
+					break;
+				case 4:
+					testData[i].Extension = ".xlt";
+					break;
+				case 5:
+					testData[i].Extension = ".xlsx";
+					break;
+				case 6:
+					testData[i].Extension = ".xls";
+					break;
+				case 7:
+					testData[i].Extension = ".wms";
+					break;
+				case 8:
+					testData[i].Extension = ".wmv";
+					break;
+				case 9:
+					testData[i].Extension = ".wmd";
+					break;
+				case 10:
+					testData[i].Extension = ".wav";
+					break;
+				case 11:
+					testData[i].Extension = ".txt";
+					break;
+				case 12:
+					testData[i].Extension = ".tmp";
+					break;
+				case 13:
+					testData[i].Extension = ".tif";
+					break;
+				case 14:
+					testData[i].Extension = ".sys";
+					break;
+				case 15:
+					testData[i].Extension = ".rtf";
+					break;
+				case 16:
+					testData[i].Extension = ".rar";
+					break;
+				case 17:
+					testData[i].Extension = ".pst";
+					break;
+				case 18:
+					testData[i].Extension = ".psd";
+					break;
+				case 19:
+					testData[i].Extension = ".pptx";
+					break;
+				case 20:
+					testData[i].Extension = ".png";
+					break;
+				case 21:
+					testData[i].Extension = ".pdf";
+					break;
+				case 22:
+					testData[i].Extension = ".mpeg";
+					break;
+				case 23:
+					testData[i].Extension = ".mp4";
+					break;
+				case 24:
+					testData[i].Extension = ".mp3";
+					break;
+				case 25:
+					testData[i].Extension = ".mov";
+					break;
+				case 26:
+					testData[i].Extension = ".midi";
+					break;
+				case 27:
+					testData[i].Extension = ".jpg";
+					break;
+				case 28:
+					testData[i].Extension = ".doc";
+					break;
+				case 29:
+					testData[i].Extension = ".dll";
+                    break;
+                default:
+					testData[i].Extension = ".exe";
+					break;
             }
         }
 
-        //Act
+		//Act
+		var answer = DirectoryOperation.GetFrequentExtension(testData);
+	    var rowsInAnswer = answer.GetLength(0)-1;
+		var actual = new int [rowsInAnswer];
+		for (int i = 0; i < rowsInAnswer; i++)
+        {
+			actual[i] = Int32.Parse(answer[i + 1, 1]);
+        }
+		var expected = actual.OrderBy(x => x).ToArray();
 
-        //Assert
+		//Assert
+		Assert.Equal(expected, actual);
     }
+
+	[Fact]
+	public void GetFrequentExtension_EmptyData_Succed()
+    {
+		//Arrange
+		var data = new List<MyFileInfo>();
+
+		//Act
+		var actual = DirectoryOperation.GetFrequentExtension(data);
+		var expected = new string[1,2] ;
+		expected[0, 0] = "Extension";
+		expected[0, 1] = "Amount of files";
+
+		//Assert
+		Assert.Equal(expected, actual);
+    }
+
+	[Fact]
+    public void GetFrequentExtension_InvalidData_Failed()
+    {
+		Assert.Throws<ArgumentNullException>(() => DirectoryOperation.GetFrequentExtension(null));
+	}
+	#endregion
+
+	#region GetBiggestDerictories
+	[Fact]
+	public void GetBiggestDirectories_RandomFileSystemNode_Succed()
+	{
+		//Arrange
+		var randomizer = new Random();
+		const int amountOfTestObjects = 100;
+		const int maxRandomFiles = 20;
+		const long maxFileSize = 2 ^ 32;
+		var random = new Random();
+		var testData = Enumerable.Repeat(new MyFileSystemNode() { Content = new List<MyFileInfo>()}, amountOfTestObjects).ToList();
+		for (int i = 0; i < amountOfTestObjects; i++)
+        {
+			var currentAmountOfFiles = random.Next(maxRandomFiles);
+			for (int j = 0; j < currentAmountOfFiles; j++)
+            {
+				testData[i].Content.Add(new MyFileInfo() {Size = random.Next(maxRandomFiles)});
+            }
+        }
+
+		//Act
+		var answer = DirectoryOperation.GetBiggestDirectories(testData);
+		var rowsInAnswer = answer.GetLength(0) - 1;
+		var actual = new long[rowsInAnswer];
+		for (int i = 0; i < rowsInAnswer; i++)
+		{
+			actual[i] = Int64.Parse(answer[i + 1, 1]);
+		}
+		var expected = actual.OrderBy(x => x).ToArray();
+
+		//Assert
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void GetBiggestDirectories_EmptyData_Succed()
+	{
+		//Arrange
+		var data = new List<MyFileSystemNode>();
+
+		//Act
+		var actual = DirectoryOperation.GetBiggestDirectories(data);
+		var expected = new string[1, 2];
+		expected[0, 0] = "Directory name";
+		expected[0, 1] = "Summ size";
+
+		//Assert
+		Assert.Equal(expected, actual);
+	}
+
+	[Fact]
+	public void GetBiggestDirectories_InvalidData_Failed()
+	{
+		Assert.Throws<NullReferenceException>(() => DirectoryOperation.GetBiggestDirectories(null));
+	}
 	#endregion
 }
