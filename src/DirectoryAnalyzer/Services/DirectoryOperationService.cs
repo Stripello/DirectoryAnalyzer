@@ -32,7 +32,7 @@ namespace DirectoryOperationServices
         {
             const int sampleSize = 10;
             var auxList = (from file in incomingFiles
-                           group file by file.Extension into g
+                           group file by file.Extension ?? "" into g
                            let amount = g.Count()
                            orderby amount descending
                            select new { Extension = g.Key, Amount = amount })
@@ -43,7 +43,7 @@ namespace DirectoryOperationServices
             var i = 1;
             foreach (var el in auxList)
             {
-                answer[i, 0] = el.Extension.ToString();
+                answer[i, 0] = el.Extension.ToString() ?? "";
                 answer[i, 1] = el.Amount.ToString();
                 i++;
             }

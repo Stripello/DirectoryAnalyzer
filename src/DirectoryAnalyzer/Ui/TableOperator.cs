@@ -86,6 +86,7 @@ namespace DirectoryAnalyzer
             }
             return answer;
         }
+
         public static IList<string> BuildTable(IList<MyFileInfo> incomingFileInfos,
             bool showName = true, bool showExtension = true, bool showSize = true, bool showChangedate = true, 
             string headOfTable = "")
