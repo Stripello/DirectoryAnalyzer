@@ -13,8 +13,8 @@ if (userPickedDirectory == null)
 }
 
 var neededDirectories = DirectoryProvider.GetAllDirectories(userPickedDirectory);
-var ligtSqlLoc = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\MyDB.db";
-var dao = new MyFileSystemNodeDaoLightDb() { DbLocation = ligtSqlLoc };
+var dataBaseDirectory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.ToString();
+var dao = new MyFileSystemNodeDaoLightDb(dataBaseDirectory);
 var nodesFromDb = dao.Read(neededDirectories);
 var directoriesFromDb = nodesFromDb.Select(x => x.DirectoryName);
 var nodesFromProvider = MyFileSystemNodeProvider.GetFsNodes(neededDirectories.Except(directoriesFromDb));
@@ -56,8 +56,6 @@ Console.WriteLine("Data base was successfuly update. Now you can close applicati
 - SLQ: SqlLite
 - web-api
 - telegram bot(по желанию)
-- определять "дубли" больших файлов
-- получить информацию о контенте директории
 - обновить данные в БД(пересканировать диск) по запросу
 По желанию можно реализовать дополнительно:
 - авто пересканирование
@@ -66,8 +64,6 @@ Console.WriteLine("Data base was successfuly update. Now you can close applicati
 - кешировать ответ последних 100 запросов пользователя
 - покрыть тестами логику доступа к данным, хотябы  для одной из 
 
- * change DTOFileInfo - delete all info about directory
- * FSNode by lambda sentence
  * fancy крутилко - in process, parallel invoke syncronized failure
  * directory = tomename exception
  * cleanup

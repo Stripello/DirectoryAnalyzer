@@ -4,19 +4,20 @@ namespace DirectoryAnalyzer.Dal
 {
     internal class MyFileSystemNodeDaoSelfWrittenDb : IMyFileSystemNodeDao
     {
-        public string DbLocation;
-        public MyFileSystemNodeDaoSelfWrittenDb(string dbLocation)
+        readonly string dataBaseLocation;
+        public MyFileSystemNodeDaoSelfWrittenDb(string databaseDirectory)
         {
-            if (!File.Exists(dbLocation))
+            databaseDirectory += "\\MySelfWrittenDb.txt";
+            if (!File.Exists(databaseDirectory))
             {
-                File.Create(dbLocation).Close();
+                File.Create(databaseDirectory).Close();
             }
-            DbLocation = dbLocation;
+            dataBaseLocation = databaseDirectory;
         }
 
         public void Add(IList<MyFileSystemNode> nodes)
         {
-            TextWriter myFile = new StreamWriter(DbLocation);
+            TextWriter myFile = new StreamWriter(dataBaseLocation);
             //need to optimize, read only last N strings
             var maxId = GetMaxId();
             foreach (var element in nodes)
@@ -34,7 +35,7 @@ namespace DirectoryAnalyzer.Dal
 
         public IList<MyFileSystemNode> Read(IList<string> directoriesToSearch)
         {
-            var allLines = File.ReadLines(DbLocation).ToArray();
+            var allLines = File.ReadLines(dataBaseLocation).ToArray();
             var answer = new List<MyFileSystemNode>();
             var length = allLines.Count();
             for (int i = 0; i < length; i++)
@@ -98,7 +99,7 @@ namespace DirectoryAnalyzer.Dal
             }
             listOfIdToUpdate = listOfIdToUpdate.Where(x => x != -1).ToList();
             var amountOfIdToUpdate = listOfIdToUpdate.Count();
-            var fileContent = File.ReadAllLines(DbLocation).ToList();
+            var fileContent = File.ReadAllLines(dataBaseLocation).ToList();
             var rowsInFile = fileContent.Count;
             for (int i = 0; i < rowsInFile && amountOfIdToUpdate>0; )
             {
@@ -124,7 +125,7 @@ namespace DirectoryAnalyzer.Dal
                     i++;
                 }
             }
-            var mySb = new StreamWriter(DbLocation);
+            var mySb = new StreamWriter(dataBaseLocation);
             mySb.Write(String.Join("\n", fileContent));
             mySb.Write("\n");
             foreach (var element in nodesToUpdate)
@@ -141,7 +142,7 @@ namespace DirectoryAnalyzer.Dal
         private int GetMaxId()
         {
             var answer = -1;
-            var content = File.ReadAllLines(DbLocation);
+            var content = File.ReadAllLines(dataBaseLocation);
             //using array instead of list because numbers of lines in db could be really big
             for (int i = content.Length - 1; i >= 0; i--)
             {
@@ -157,7 +158,7 @@ namespace DirectoryAnalyzer.Dal
         private IList<int> GetDirectoriesId(IList<string> setOfDirectories)
         {
             var answer = Enumerable.Repeat(-1,setOfDirectories.Count).ToArray();
-            var fileContent = File.ReadAllLines(DbLocation);
+            var fileContent = File.ReadAllLines(dataBaseLocation);
             var tempSetOfDirectories = new List<string>(setOfDirectories);
             for (int i = 1; i < fileContent.Length && tempSetOfDirectories.Count !=0; i++)
             {

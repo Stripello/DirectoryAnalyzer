@@ -5,11 +5,16 @@ namespace DirectoryAnalyzer.Dal
 {
     public class MyFileSystemNodeDaoLightDb : IMyFileSystemNodeDao
     {
-        public string DbLocation;
+        readonly string dataBaseLocation;
+
+        public MyFileSystemNodeDaoLightDb(string dataBaseDirectory)
+        {
+            dataBaseLocation = dataBaseDirectory + "\\MyLiteDb.db";
+        }
 
         public void Add(IList<MyFileSystemNode> nodesToStore)
         {
-            using (var db = new LiteDatabase(DbLocation))
+            using (var db = new LiteDatabase(dataBaseLocation))
             {
                 var storedFileSystemNodes = db.GetCollection<MyFileSystemNode>("FileSystemNodes");
                 foreach (var node in nodesToStore)
@@ -22,7 +27,7 @@ namespace DirectoryAnalyzer.Dal
         public IList<MyFileSystemNode> Read(IList<string> directoriesToSearch)
         {
             var answer = new List<MyFileSystemNode>();
-            using (var db = new LiteDatabase(DbLocation))
+            using (var db = new LiteDatabase(dataBaseLocation))
             {
                 var storedFileSystemNodes = db.GetCollection<MyFileSystemNode>("FileSystemNodes");
                 answer.AddRange( storedFileSystemNodes.Query().Where(x=> directoriesToSearch.Contains(x.DirectoryName)).ToList() );
