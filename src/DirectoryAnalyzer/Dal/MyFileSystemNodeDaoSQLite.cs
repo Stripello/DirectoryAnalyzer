@@ -44,8 +44,16 @@ namespace DirectoryAnalyzer.Dal
                 connection.Open();
                 SqliteCommand command = new SqliteCommand();
                 command.Connection = connection;
+                command.CommandText = "SELECT name FROM sqlite_master WHERE type='table' AND name='FileSystemNodes'";
+                using (var checkFortableExist = command.ExecuteReader())
+                {
+                    if (!checkFortableExist.HasRows)
+                    {
+                        return dbContent;
+                    }
+                }
                 command.CommandText = "SELECT * FROM FileSystemNodes";
-                using (SqliteDataReader reader = command.ExecuteReader())
+                using (var reader = command.ExecuteReader())
                 {
                     if (reader.HasRows)
                     {

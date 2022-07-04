@@ -6,7 +6,7 @@ namespace DirectoryOperationServices
 
     public static class DirectoryOperation
     {
-        internal static IList<MyFileInfo> GetAllFiles(IList<MyFileSystemNode> incomingFS)
+        internal static IList<MyFileInfo> GetAllFiles(IEnumerable<MyFileSystemNode> incomingFS)
         {
             var answer = new List<MyFileInfo>();
             foreach (var element in incomingFS)
@@ -87,14 +87,14 @@ namespace DirectoryOperationServices
                 answer.Add(new(node.DirectoryName, node.Content.Sum(x => x.Size)));
             }
             var returnTableSize = allNodes.Count() < 10 ? allNodes.Count() + 1 : 11;
-            answer.Sort((x, y) => x.Item2.CompareTo(y.Item2)); //possible issues
+            answer = answer.OrderBy(x => x.Item2).Reverse().ToList();
             var tableToReturn = new string[returnTableSize, 2];
             tableToReturn[0, 0] = "Directory name";
             tableToReturn[0, 1] = "Summ size";
             for (int i = 1; i < returnTableSize; i++)
             {
-                tableToReturn[i, 0] = answer[i].Item1;
-                tableToReturn[i, 1] = answer[i].Item2.ToString();
+                tableToReturn[i, 0] = answer[i-1].Item1;
+                tableToReturn[i, 1] = answer[i-1].Item2.ToString();
             }
             return tableToReturn;
         }

@@ -14,21 +14,23 @@ if (userPickedDirectory == null)
 Console.WriteLine("Processing data, plese wait.");
 var neededDirectories = DirectoryProvider.GetAllDirectories(userPickedDirectory);
 var dataBaseDirectory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.ToString();
-var dao = new MyFileSystemNodeDaoSelfWrittenDb(dataBaseDirectory);
+var dao = new MyFileSystemNodeDaoSQLite(dataBaseDirectory);
 var nodesFromDb = dao.Read(neededDirectories);
 var directoriesFromDb = nodesFromDb.Select(x => x.DirectoryName);
 var nodesFromProvider = MyFileSystemNodeProvider.GetFsNodes(neededDirectories.Except(directoriesFromDb));
+var allNodes = nodesFromDb.Concat(nodesFromProvider);
 
-var fileList = DirectoryOperation.GetAllFiles(nodesFromDb).ToList();
-fileList.AddRange(DirectoryOperation.GetAllFiles(nodesFromProvider));
-TableOperator.BuildTable(DirectoryOperation.GetOldestFiles(fileList), true, false, false, true, "oldest file").ToList().ForEach(x => Console.WriteLine(x));
+var allFiles = DirectoryOperation.GetAllFiles(allNodes).ToList();
+TableOperator.BuildTable(DirectoryOperation.GetOldestFiles(allFiles), true, false, false, true, "oldest file").ToList().ForEach(x => Console.WriteLine(x));
 Console.WriteLine();
-TableOperator.BuildTable(DirectoryOperation.GetBiggestFiles(fileList), true, false, true, false, "biggest files").ToList().ForEach(x => Console.WriteLine(x));
+TableOperator.BuildTable(DirectoryOperation.GetBiggestFiles(allFiles), true, false, true, false, "biggest files").ToList().ForEach(x => Console.WriteLine(x));
 Console.WriteLine();
-TableOperator.BuildTable(DirectoryOperation.GetFrequentExtension(fileList), "frequient extensions").ToList().ForEach(x => Console.WriteLine(x));
+TableOperator.BuildTable(DirectoryOperation.GetFrequentExtension(allFiles), "frequient extensions").ToList().ForEach(x => Console.WriteLine(x));
 Console.WriteLine();
-TableOperator.BuildTable(DirectoryOperation.GetBiggestExtensions(fileList), "biggest extensions").ToList().ForEach(x => Console.WriteLine(x));
-var copies = DirectoryOperation.GetCopies(fileList).ToList();
+TableOperator.BuildTable(DirectoryOperation.GetBiggestExtensions(allFiles), "biggest extensions").ToList().ForEach(x => Console.WriteLine(x));
+Console.WriteLine();
+TableOperator.BuildTable(DirectoryOperation.GetBiggestDirectories(allNodes), "biggest directories").ToList().ForEach(x => Console.WriteLine(x));
+var copies = DirectoryOperation.GetCopies(allFiles).ToList();
 if (copies.Count > 0)
 {
     //cleanup
