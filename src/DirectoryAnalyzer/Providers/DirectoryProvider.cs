@@ -2,7 +2,7 @@ namespace DirectoryAnalyzer.Providers;
 
 public class DirectoryProvider
 {
-    internal static string AskDirectory()
+    internal static string? AskDirectory()
     {
         string directory;
         while (true)

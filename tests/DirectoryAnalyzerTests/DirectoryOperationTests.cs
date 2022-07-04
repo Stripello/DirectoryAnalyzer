@@ -306,7 +306,7 @@ public class DirectoryOperationTests
 		var randomizer = new Random();
 		const int amountOfTestObjects = 100;
 		const int maxRandomFiles = 20;
-		const long maxFileSize = 2 ^ 32;
+		const int maxFileSize = 2 ^ 32;
 		var random = new Random();
 		var testData = Enumerable.Repeat(new MyFileSystemNode() { Content = new List<MyFileInfo>()}, amountOfTestObjects).ToList();
 		for (int i = 0; i < amountOfTestObjects; i++)
@@ -314,7 +314,7 @@ public class DirectoryOperationTests
 			var currentAmountOfFiles = random.Next(maxRandomFiles);
 			for (int j = 0; j < currentAmountOfFiles; j++)
             {
-				testData[i].Content.Add(new MyFileInfo() {Size = random.Next(maxRandomFiles)});
+				testData[i].Content.Add(new MyFileInfo() {Size = random.Next(maxFileSize) });
             }
         }
 
@@ -351,7 +351,7 @@ public class DirectoryOperationTests
 	[Fact]
 	public void GetBiggestDirectories_InvalidData_Failed()
 	{
-		Assert.Throws<NullReferenceException>(() => DirectoryOperation.GetBiggestDirectories(null));
+        Assert.Throws<NullReferenceException>(() => DirectoryOperation.GetBiggestDirectories(null));
 	}
 	#endregion
 }

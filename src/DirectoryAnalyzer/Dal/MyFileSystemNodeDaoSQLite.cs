@@ -65,8 +65,12 @@ namespace DirectoryAnalyzer.Dal
 
             }
 
-            var auxArray = new List<string>(directoriesToSearch);
-            for (int i = 0; i<)
+            //probably it's better to order both of arrays then only start to intersect
+           var answer = (from directory in directoriesToSearch
+                        join node in dbContent on directory equals node.DirectoryName
+                        select node).ToList();
+
+            return answer ?? new List<MyFileSystemNode>();
         }
 
         public void UpdateDb(IList<MyFileSystemNode> nodesToUpdate)
