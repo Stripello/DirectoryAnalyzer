@@ -138,7 +138,7 @@ namespace DirectoryAnalyzer
                             auxArray[i + 1, currentColumn] = (incomingFileInfos[i].Size / 1048576).ToString() + " Kb";
                             break;
                         case > 1024: //kilobyte size 
-                            auxArray[i + 1, currentColumn] = (incomingFileInfos[i].Size / 1048576).ToString() + " Kb";
+                            auxArray[i + 1, currentColumn] = (incomingFileInfos[i].Size / 1024).ToString() + " Kb";
                             break;
 
                         default:

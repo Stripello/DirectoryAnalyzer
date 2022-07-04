@@ -18,23 +18,25 @@ namespace DirectoryAnalyzer.Dal
         public void Add(IList<MyFileSystemNode> nodes)
         {
             var maxId = GetMaxId()+1;
-            TextWriter myFile = new StreamWriter(dataBaseLocation);
-            //need to optimize, read only last N strings
-            foreach (var element in nodes)
+            using (StreamWriter myStreamWriter = File.AppendText(dataBaseLocation))
             {
-                //bootleg last id incrimentation
-                if (element.Id == 0)
+                foreach (var element in nodes)
                 {
-                    element.Id = maxId;
-                    maxId++;
+                    //bootleg last id incrimentation
+                    if (element.Id == 0)
+                    {
+                        element.Id = maxId;
+                        maxId++;
+                    }
+                    myStreamWriter.WriteLine(element.ToString());
                 }
-                myFile.Write(element.ToString());
+                
             }
-            myFile.Close();
         }
 
         public IList<MyFileSystemNode> Read(IList<string> directoriesToSearch)
         {
+            var remainDirectoriesToSearch = new List<string>(directoriesToSearch);
             var allLines = File.ReadLines(dataBaseLocation).ToArray();
             var answer = new List<MyFileSystemNode>();
             var length = allLines.Count();
@@ -45,12 +47,12 @@ namespace DirectoryAnalyzer.Dal
                     continue;
                 }
                 i++;
-                var tempId = directoriesToSearch.IndexOf(allLines[i][1..]);
+                var tempId = remainDirectoriesToSearch.IndexOf(allLines[i][1..]);
                 if (tempId == -1)
                 {
                     continue;
                 }
-                directoriesToSearch.RemoveAt(tempId);
+                remainDirectoriesToSearch.RemoveAt(tempId);
                 var nodeId = int.Parse(allLines[i - 1][1..]);
                 var directoryName = allLines[i][1..];
                 var childrenDirectories = new List<string>();
@@ -66,6 +68,7 @@ namespace DirectoryAnalyzer.Dal
                     content.Add(MyFileInfo.Parse(allLines[i]));
                     i++;
                 }
+                i--;
                 answer.Add(new MyFileSystemNode()
                 {
                     Id = nodeId,

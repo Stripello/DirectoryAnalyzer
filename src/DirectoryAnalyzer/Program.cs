@@ -31,15 +31,17 @@ TableOperator.BuildTable(DirectoryOperation.GetBiggestExtensions(fileList), "big
 var copies = DirectoryOperation.GetCopies(fileList).ToList();
 if (copies.Count > 0)
 {
+    //cleanup
     Console.WriteLine("\nPossible duplicate files by groups:");
-    Console.WriteLine(new String('-', 50));
+    var divider = new String('-', 50);
+    Console.WriteLine(divider);
     foreach (var subgroup in copies)
     {
         foreach (var element in subgroup)
         {
             Console.WriteLine(element);
         }
-        Console.WriteLine(new String('-', 50));
+        Console.WriteLine(divider);
     }
 }
 else
@@ -47,8 +49,6 @@ else
     Console.WriteLine("\nCan't find duplicate of files.");
 }
 dao.Add(nodesFromProvider);
-
-
 Console.WriteLine("Data base was successfuly update. Now you can close application.");
 
 
@@ -65,8 +65,9 @@ Console.WriteLine("Data base was successfuly update. Now you can close applicati
 - кешировать ответ последних 100 запросов пользователя
 - покрыть тестами логику доступа к данным, хотябы  для одной из 
 
- * fancy крутилко - in process, parallel invoke syncronized failure
+ * threading
  * directory = tomename exception
  * cleanup
  * length check
+ * auto delatate console output
  */
