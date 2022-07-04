@@ -39,7 +39,7 @@ public class MyFileInfo
 
     public static MyFileInfo Parse(string stringToParse)
     {
-        var tempArray = stringToParse.Split('*');
+        var tempArray = stringToParse[1..].Split('*');
         return new MyFileInfo() { Name = tempArray[0], Extension = tempArray[1], Size = long.Parse(tempArray[2]), Changedate = DateTime.Parse(tempArray[3]) };
     }
 }
