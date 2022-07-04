@@ -17,9 +17,9 @@ namespace DirectoryAnalyzer.Dal
 
         public void Add(IList<MyFileSystemNode> nodes)
         {
+            var maxId = GetMaxId()+1;
             TextWriter myFile = new StreamWriter(dataBaseLocation);
             //need to optimize, read only last N strings
-            var maxId = GetMaxId();
             foreach (var element in nodes)
             {
                 //bootleg last id incrimentation
@@ -136,7 +136,7 @@ namespace DirectoryAnalyzer.Dal
         }
 
         /// <summary>
-        /// Necesary to correctly set id of new elements of DB
+        /// Returns current maximal id of all elements in DB. If DB empty returns -1;
         /// </summary>
         /// <returns></returns>
         private int GetMaxId()

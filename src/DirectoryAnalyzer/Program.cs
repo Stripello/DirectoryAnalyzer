@@ -14,47 +14,40 @@ if (userPickedDirectory == null)
 Console.WriteLine("Processing data, plese wait.");
 var neededDirectories = DirectoryProvider.GetAllDirectories(userPickedDirectory);
 var dataBaseDirectory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.ToString();
-var dao = new MyFileSystemNodeDaoLightDb(dataBaseDirectory);
+var dao = new MyFileSystemNodeDaoSelfWrittenDb(dataBaseDirectory);
 var nodesFromDb = dao.Read(neededDirectories);
 var directoriesFromDb = nodesFromDb.Select(x => x.DirectoryName);
 var nodesFromProvider = MyFileSystemNodeProvider.GetFsNodes(neededDirectories.Except(directoriesFromDb));
 
-Parallel.Invoke(
-    () =>
+var fileList = DirectoryOperation.GetAllFiles(nodesFromDb).ToList();
+fileList.AddRange(DirectoryOperation.GetAllFiles(nodesFromProvider));
+TableOperator.BuildTable(DirectoryOperation.GetOldestFiles(fileList), true, false, false, true, "oldest file").ToList().ForEach(x => Console.WriteLine(x));
+Console.WriteLine();
+TableOperator.BuildTable(DirectoryOperation.GetBiggestFiles(fileList), true, false, true, false, "biggest files").ToList().ForEach(x => Console.WriteLine(x));
+Console.WriteLine();
+TableOperator.BuildTable(DirectoryOperation.GetFrequentExtension(fileList), "frequient extensions").ToList().ForEach(x => Console.WriteLine(x));
+Console.WriteLine();
+TableOperator.BuildTable(DirectoryOperation.GetBiggestExtensions(fileList), "biggest extensions").ToList().ForEach(x => Console.WriteLine(x));
+var copies = DirectoryOperation.GetCopies(fileList).ToList();
+if (copies.Count > 0)
 {
-    var fileList = DirectoryOperation.GetAllFiles(nodesFromDb).ToList();
-    fileList.AddRange(DirectoryOperation.GetAllFiles(nodesFromProvider));
-    TableOperator.BuildTable(DirectoryOperation.GetOldestFiles(fileList), true, false, false, true, "oldest file").ToList().ForEach(x=>Console.WriteLine(x));
-    Console.WriteLine();
-    TableOperator.BuildTable(DirectoryOperation.GetBiggestFiles(fileList), true, false, true, false, "biggest files").ToList().ForEach(x => Console.WriteLine(x));
-    Console.WriteLine();
-    TableOperator.BuildTable(DirectoryOperation.GetFrequentExtension(fileList), "frequient extensions").ToList().ForEach(x => Console.WriteLine(x));
-    Console.WriteLine();
-    TableOperator.BuildTable(DirectoryOperation.GetBiggestExtensions(fileList), "biggest extensions").ToList().ForEach(x => Console.WriteLine(x));
-    var copies = DirectoryOperation.GetCopies(fileList).ToList();
-    if (copies.Count > 0)
+    Console.WriteLine("\nPossible duplicate files by groups:");
+    Console.WriteLine(new String('-', 50));
+    foreach (var subgroup in copies)
     {
-        Console.WriteLine("\nPossible duplicate files by groups:");
-        Console.WriteLine(new String('-', 50));
-        foreach (var subgroup in copies)
+        foreach (var element in subgroup)
         {
-            foreach (var element in subgroup)
-            {
-                Console.WriteLine(element);
-            }
-            Console.WriteLine(new String('-', 50));
+            Console.WriteLine(element);
         }
+        Console.WriteLine(new String('-', 50));
     }
-    else
-    {
-        Console.WriteLine("\nCan't find duplicate of files.");
-    }
-    
+}
+else
+{
+    Console.WriteLine("\nCan't find duplicate of files.");
+}
+dao.Add(nodesFromProvider);
 
-},
-() =>
-dao.Add(nodesFromProvider)
-  );
 
 Console.WriteLine("Data base was successfuly update. Now you can close application.");
 
