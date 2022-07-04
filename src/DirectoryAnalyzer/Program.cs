@@ -11,7 +11,7 @@ if (userPickedDirectory == null)
 {
     return;
 }
-
+Console.WriteLine("Processing data, plese wait.");
 var neededDirectories = DirectoryProvider.GetAllDirectories(userPickedDirectory);
 var dataBaseDirectory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.ToString();
 var dao = new MyFileSystemNodeDaoLightDb(dataBaseDirectory);
@@ -32,16 +32,24 @@ Parallel.Invoke(
     Console.WriteLine();
     TableOperator.BuildTable(DirectoryOperation.GetBiggestExtensions(fileList), "biggest extensions").ToList().ForEach(x => Console.WriteLine(x));
     var copies = DirectoryOperation.GetCopies(fileList).ToList();
-    Console.WriteLine("\npossible copies of files by groups");
-    Console.WriteLine(new String('-',50));
-    foreach (var subgroup in copies)
+    if (copies.Count > 0)
     {
-        foreach (var element in subgroup)
-        {
-            Console.WriteLine(element);
-        }
+        Console.WriteLine("\nPossible duplicate files by groups:");
         Console.WriteLine(new String('-', 50));
+        foreach (var subgroup in copies)
+        {
+            foreach (var element in subgroup)
+            {
+                Console.WriteLine(element);
+            }
+            Console.WriteLine(new String('-', 50));
+        }
     }
+    else
+    {
+        Console.WriteLine("\nCan't find duplicate of files.");
+    }
+    
 
 },
 () =>
