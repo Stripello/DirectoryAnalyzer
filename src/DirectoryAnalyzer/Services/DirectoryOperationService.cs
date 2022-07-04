@@ -130,7 +130,7 @@ namespace DirectoryOperationServices
             return answer;
         }
 
-        public static IList<IList<MyFileInfo>> CheckSumGrouping(IList<MyFileInfo> myFileInfos)
+        private static IList<IList<MyFileInfo>> CheckSumGrouping(IList<MyFileInfo> myFileInfos)
         {
             const int sliceSize = 8;
             var auxList = new List<(MyFileInfo, long)>();
