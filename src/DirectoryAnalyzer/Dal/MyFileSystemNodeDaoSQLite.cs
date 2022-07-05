@@ -27,9 +27,9 @@ namespace DirectoryAnalyzer.Dal
                 foreach (var node in nodesToStore)
                 {
                     command.CommandText = "INSERT INTO FileSystemNodes (DirectoryName,ChildrenDirectories,Content)" +
-                        $"VALUES ({node.DirectoryName}," +
-                        $"{string.Join('\n', node.ChildrenDirectories)}," +
-                        $"{string.Join('\n', node.Content.Select(x => x.ToString()))})";
+                        $"VALUES ('{node.DirectoryName}'," +
+                        $"'{string.Join('\n', node.ChildrenDirectories)}'," +
+                        $"'{string.Join('\n', node.Content.Select(x => x.ToString()))}')";
                     command.ExecuteNonQuery();
                     //Ducttape using joined strings instead of arrays
                 }
@@ -59,13 +59,14 @@ namespace DirectoryAnalyzer.Dal
                     {
                         while (reader.Read())
                         {
-                            var Id = (int)reader.GetValue(0);
+                            //ducttape using upcast (long) then downcast (int)
+                            var Id = (long)reader.GetValue(0);
                             var DirectoryName = (string)reader.GetValue(1);
                             var ChildrenDirectories = reader.GetValue(2).ToString().Split('\n').ToList();
-                            var Content = reader.GetValue(3).ToString().Split('\n').ToList().Select(x=> MyFileInfo.Parse(x)).ToList();
+                            var Content = reader.GetValue(3).ToString().Split('\n').ToList().Where(x=>!string.IsNullOrEmpty(x)).Select(x=> MyFileInfo.Parse(x)).ToList();
 
                             Console.WriteLine($"{Id} \t {DirectoryName} \t {ChildrenDirectories} \t {Content}");
-                            dbContent.Add(new MyFileSystemNode() { Id = Id, DirectoryName = DirectoryName, ChildrenDirectories = ChildrenDirectories , Content = Content});
+                            dbContent.Add(new MyFileSystemNode() { Id = (int)Id, DirectoryName = DirectoryName, ChildrenDirectories = ChildrenDirectories , Content = Content});
                         }
                     }
                 }
