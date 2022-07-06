@@ -64,8 +64,6 @@ namespace DirectoryAnalyzer.Dal
                             var DirectoryName = (string)reader.GetValue(1);
                             var ChildrenDirectories = reader.GetValue(2).ToString().Split('\n').ToList();
                             var Content = reader.GetValue(3).ToString().Split('\n').ToList().Where(x=>!string.IsNullOrEmpty(x)).Select(x=> MyFileInfo.Parse(x)).ToList();
-
-                            Console.WriteLine($"{Id} \t {DirectoryName} \t {ChildrenDirectories} \t {Content}");
                             dbContent.Add(new MyFileSystemNode() { Id = (int)Id, DirectoryName = DirectoryName, ChildrenDirectories = ChildrenDirectories , Content = Content});
                         }
                     }
