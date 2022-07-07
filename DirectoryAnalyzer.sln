@@ -10,11 +10,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1BEF8CAD-785F-4DA0-9BF9-5FEB4669CAFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirectoryAnalyzer", "src\DirectoryAnalyzer\DirectoryAnalyzer.csproj", "{9B01634D-7F99-4CCD-B71F-671C4E8EC363}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DirectoryAnalyzer", "src\DirectoryAnalyzer\DirectoryAnalyzer.csproj", "{9B01634D-7F99-4CCD-B71F-671C4E8EC363}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{221D3958-6C20-4F0A-8345-822CCF0BA572}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirectoryAnalyzerTests", "tests\DirectoryAnalyzerTests\DirectoryAnalyzerTests.csproj", "{1724EB02-4EE4-49E5-B23A-1D5554F047F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DirectoryAnalyzerTests", "tests\DirectoryAnalyzerTests\DirectoryAnalyzerTests.csproj", "{1724EB02-4EE4-49E5-B23A-1D5554F047F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaoTests", "tests\DaoTests\DaoTests.csproj", "{32FFFE71-BF41-47A6-9EFD-E28E9B1A4DA0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,15 +32,20 @@ Global
 		{1724EB02-4EE4-49E5-B23A-1D5554F047F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1724EB02-4EE4-49E5-B23A-1D5554F047F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1724EB02-4EE4-49E5-B23A-1D5554F047F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32FFFE71-BF41-47A6-9EFD-E28E9B1A4DA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32FFFE71-BF41-47A6-9EFD-E28E9B1A4DA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32FFFE71-BF41-47A6-9EFD-E28E9B1A4DA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32FFFE71-BF41-47A6-9EFD-E28E9B1A4DA0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {97C26C17-C6B1-4EC3-89CF-09E35A9F8301}
-	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9B01634D-7F99-4CCD-B71F-671C4E8EC363} = {1BEF8CAD-785F-4DA0-9BF9-5FEB4669CAFE}
 		{1724EB02-4EE4-49E5-B23A-1D5554F047F9} = {221D3958-6C20-4F0A-8345-822CCF0BA572}
+		{32FFFE71-BF41-47A6-9EFD-E28E9B1A4DA0} = {221D3958-6C20-4F0A-8345-822CCF0BA572}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {97C26C17-C6B1-4EC3-89CF-09E35A9F8301}
 	EndGlobalSection
 EndGlobal

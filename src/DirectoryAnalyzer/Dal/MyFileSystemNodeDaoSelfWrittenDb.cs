@@ -2,12 +2,12 @@
 
 namespace DirectoryAnalyzer.Dal
 {
-    internal class MyFileSystemNodeDaoSelfWrittenDb : IMyFileSystemNodeDao
+    public class MyFileSystemNodeDaoSelfWrittenDb : IMyFileSystemNodeDao
     {
         readonly string dataBaseLocation;
-        public MyFileSystemNodeDaoSelfWrittenDb(string databaseDirectory)
+        public MyFileSystemNodeDaoSelfWrittenDb(string databaseDirectory , string dataBaseName = "MySelfWrittenDb")
         {
-            databaseDirectory += "\\MySelfWrittenDb.txt";
+            databaseDirectory += "\\" + dataBaseName + ".txt";
             if (!File.Exists(databaseDirectory))
             {
                 File.Create(databaseDirectory).Close();

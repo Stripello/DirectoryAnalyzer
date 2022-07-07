@@ -1,0 +1,128 @@
+using DirectoryAnalyzer;
+using DirectoryAnalyzer.Dal;
+using DirectoryAnalyzer.Models;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Xunit;
+using System.Linq;
+
+namespace DaoTests
+{
+    public class DaoSelfWrittenDbTests
+    {
+        [Fact]
+        public void ClassConstructor_SuccessfullDbCreation()
+        {
+            //Arrange
+            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var name = "TestSelfWrittenDb";
+            var fullName = directory + "\\" + name + ".txt";
+            File.Delete(fullName);
+
+            //Act
+            var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
+
+            //Assert
+            Assert.True(File.Exists(fullName));
+            File.Delete(fullName);
+        }
+
+        [Fact]
+        public void Add_StaticNodes_Succed()
+        {
+            //Arrange
+            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var name = "DbForAddingStaticNodes";
+            var fullName = directory + "\\" + name + ".txt";
+            File.Delete(fullName);
+            var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
+            var data = new List<MyFileSystemNode>();
+
+            data.Add(new MyFileSystemNode()
+            {
+                Id = 1,
+                DirectoryName = @"C:\repos\try-samples-main\LINQ",
+                ChildrenDirectories = new List<string>() { @"C:\repos\try-samples-main\LINQ\docs",
+                    @"C:\repos\try-samples-main\LINQ\src" },
+                Content = new List<MyFileInfo>() { new MyFileInfo() { Name = @"C:\repos\try-samples-main\LINQ\readme.md",
+                    Extension = ".md",Size=1489,Changedate = DateTime.Parse("19.10.2021 3:30:52") } }
+            });
+
+            data.Add(new MyFileSystemNode()
+            {
+                Id = 2,
+                DirectoryName = @"C:\repos\try-samples-main\LINQ\docs",
+                ChildrenDirectories = new List<string>(),
+                Content = new List<MyFileInfo>() {
+                    new MyFileInfo() { Name = @"C:\repos\try-samples-main\LINQ\docs\lazy-equation.md",
+                    Extension = ".md",Size=3001,Changedate = DateTime.Parse("19.10.2021 3:30:52") },
+
+                    new MyFileInfo(){ Name = @"C:\repos\try-samples-main\LINQ\docs\query-syntax.md",
+                    Extension = ".md",Size = 2068,Changedate =DateTime.Parse("19.10.2021 3:30:52")} }
+            });
+
+            data.Add(new MyFileSystemNode()
+            {
+                Id = 3,
+                DirectoryName = @"C:\repos\try-samples-main\LINQ\src",
+                ChildrenDirectories = new List<string>(),
+                Content = new List<MyFileInfo>() {
+                    new MyFileInfo() { Name = @"C:\repos\try-samples-main\LINQ\src\LINQ.csproj",
+                    Extension = ".csproj",Size=431,Changedate = DateTime.Parse("19.10.2021 3:30:52") },
+
+                    new MyFileInfo(){ Name = @"C:\repos\try-samples-main\LINQ\src\Program.cs",
+                    Extension = ".cs",Size = 2900,Changedate =DateTime.Parse("19.10.2021 3:30:52")} }
+            });
+
+            //Act
+            myDb.Add(data);
+
+            //Assert
+            var expected = new string[] { "$1",
+            @">C:\repos\try-samples-main\LINQ",
+            @"?C:\repos\try-samples-main\LINQ\docs",
+            @"?C:\repos\try-samples-main\LINQ\src",
+            @"*C:\repos\try-samples-main\LINQ\readme.md*.md*1489*19.10.2021 3:30:52",
+            "",
+            "$2",
+            @">C:\repos\try-samples-main\LINQ\docs",
+            @"*C:\repos\try-samples-main\LINQ\docs\lazy-equation.md*.md*3001*19.10.2021 3:30:52",
+            @"*C:\repos\try-samples-main\LINQ\docs\query-syntax.md*.md*2068*19.10.2021 3:30:52",
+            "",
+            "$3",
+            @">C:\repos\try-samples-main\LINQ\src",
+            @"*C:\repos\try-samples-main\LINQ\src\LINQ.csproj*.csproj*431*19.10.2021 3:30:52",
+            @"*C:\repos\try-samples-main\LINQ\src\Program.cs*.cs*2900*19.10.2021 3:30:52",
+            ""};
+            var actual = File.ReadAllLines(fullName);
+            Assert.Equal(expected, actual);
+            File.Delete(fullName);
+        }
+
+        [Fact]
+        public void Read_StaticNodes_Succed()
+        {
+            //Arrange
+            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var name = "DbForReadingStaticNodes";
+            var fullName = directory + "\\" + name + ".txt";
+
+            //Act
+            var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directory,name);
+            var actual = myDb.Read(new List<string>() { @"C:\repos\try-samples-main\LINQ\src" }).Select(x=>x.ToString());
+            var expected = new List<MyFileSystemNode>() { new MyFileSystemNode() { Id =3 ,
+            DirectoryName = @"C:\repos\try-samples-main\LINQ\src", ChildrenDirectories = new List<string>(),
+            Content = new List<MyFileInfo>(){ 
+                new MyFileInfo() {Name = @"C:\repos\try-samples-main\LINQ\src\LINQ.csproj",Extension = ".csproj",
+                Size = 431, Changedate = DateTime.Parse("19.10.2021 3:30:52")} ,
+                new MyFileInfo(){Name = @"C:\repos\try-samples-main\LINQ\src\Program.cs" , Extension = ".cs",
+                Size=2900, Changedate = DateTime.Parse("19.10.2021 3:30:52")}
+            } } }.Select(x=>x.ToString());
+
+            //ducttape using converting to strings
+            //Assert
+            Assert.Equal(expected,actual);
+        }
+    }
+}

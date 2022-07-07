@@ -7,9 +7,9 @@ namespace DirectoryAnalyzer.Dal
     {
         readonly string dataBaseLocation;
 
-        public MyFileSystemNodeDaoLightDb(string dataBaseDirectory)
+        public MyFileSystemNodeDaoLightDb(string dataBaseDirectory, string dataBaseName = "MyLiteDb")
         {
-            dataBaseLocation = dataBaseDirectory + "\\MyLiteDb.db";
+            dataBaseLocation = dataBaseDirectory + "\\" + dataBaseName + ".db";
         }
 
         public void Add(IList<MyFileSystemNode> nodesToStore)

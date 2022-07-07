@@ -7,9 +7,9 @@ namespace DirectoryAnalyzer.Dal
     {
         readonly string dataBaseLocation;
 
-        public MyFileSystemNodeDaoSQLite(string dataBaseDirectory)
+        public MyFileSystemNodeDaoSQLite(string dataBaseDirectory, string dataBaseName = "MySQLiteDb")
         {
-            dataBaseLocation = dataBaseDirectory + "\\MySQLite.db";
+            dataBaseLocation = dataBaseDirectory + "\\" + dataBaseName + ".db";
         }
         public void Add(IList<MyFileSystemNode> nodesToStore)
         {
