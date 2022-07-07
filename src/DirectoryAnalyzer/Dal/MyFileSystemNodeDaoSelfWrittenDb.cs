@@ -82,9 +82,8 @@ namespace DirectoryAnalyzer.Dal
 
         public void UpdateDb(IList<MyFileSystemNode> nodesToUpdate)
         {
-            //method must be used somewhere to check it's 
-            var fileNames = nodesToUpdate.Select(x => x.DirectoryName).ToList();
-            var listOfIdToUpdate = GetDirectoriesId(fileNames);
+            var directoryNames = nodesToUpdate.Select(x => x.DirectoryName).ToList();
+            var listOfIdToUpdate = GetDirectoriesId(directoryNames);
             //could be optimize, double open and scan of file not neccesary
             var maxId = GetMaxId();
             //protect id of elements from changing if element was presented in DB

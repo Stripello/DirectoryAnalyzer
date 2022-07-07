@@ -101,7 +101,7 @@ namespace DaoTests
         }
 
         [Fact]
-        public void Read_StaticNodes_Succed()
+        public void Read_StaticData_Succed()
         {
             //Arrange
             var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
@@ -123,6 +123,69 @@ namespace DaoTests
             //ducttape using converting to strings
             //Assert
             Assert.Equal(expected,actual);
+        }
+
+        [Fact]
+        public void Update_StaticData_Succed()
+        {
+            //Arrange
+            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var name = "DbForUpdate";
+            var fullName = directory + "\\" + name + ".txt";
+            File.Delete(fullName);
+            File.WriteAllLines(fullName, new string[] { "$1",
+            @">C:\repos\try-samples-main\LINQ",
+            @"?C:\repos\try-samples-main\LINQ\docs",
+            @"?C:\repos\try-samples-main\LINQ\src",
+            @"*C:\repos\try-samples-main\LINQ\readme.md*.md*1489*19.10.2021 3:30:52",
+            "",
+            "$2",
+            @">C:\repos\try-samples-main\LINQ\docs",
+            @"*C:\repos\try-samples-main\LINQ\docs\lazy-equation.md*.md*3001*19.10.2021 3:30:52",
+            @"*C:\repos\try-samples-main\LINQ\docs\query-syntax.md*.md*2068*19.10.2021 3:30:52",
+            "",
+            "$3",
+            @">C:\repos\try-samples-main\LINQ\src",
+            @"*C:\repos\try-samples-main\LINQ\src\LINQ.csproj*.csproj*431*19.10.2021 3:30:52",
+            @"*C:\repos\try-samples-main\LINQ\src\Program.cs*.cs*2900*19.10.2021 3:30:52",
+            ""});
+
+            //Act
+            var myBd = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
+            var nodesToUpdate = new List<MyFileSystemNode>() { new MyFileSystemNode() {
+                DirectoryName = @"C:\repos\try-samples-main\LINQ\docs",
+                ChildrenDirectories = new List<string> { @"C:\repos\try-samples-main\LINQ\docs\KindaNewSubdir" },
+            Content = new List<MyFileInfo>(){ 
+                new MyFileInfo() { Name = @"C:\repos\try-samples-main\LINQ\docs\KindaNewFile.gif" ,
+                Extension = ".gif",Size = 2424,Changedate = DateTime.Parse("03.07.2022 19:48:15")},
+                new MyFileInfo () { Name = @"C:\repos\try-samples-main\LINQ\docs\lazy-equation.md",
+                Extension = ".md", Size = 3001, Changedate = DateTime.Parse("19.10.2021 3:30:52")}
+            }
+            } };
+            myBd.UpdateDb(nodesToUpdate);
+            var actual = File.ReadAllLines(fullName);
+            var expected = new string[] { "$1",
+            @">C:\repos\try-samples-main\LINQ",
+            @"?C:\repos\try-samples-main\LINQ\docs",
+            @"?C:\repos\try-samples-main\LINQ\src",
+            @"*C:\repos\try-samples-main\LINQ\readme.md*.md*1489*19.10.2021 3:30:52",
+            "",
+            "$3",
+            @">C:\repos\try-samples-main\LINQ\src",
+            @"*C:\repos\try-samples-main\LINQ\src\LINQ.csproj*.csproj*431*19.10.2021 3:30:52",
+            @"*C:\repos\try-samples-main\LINQ\src\Program.cs*.cs*2900*19.10.2021 3:30:52",
+            "",
+            "$2",
+            @">C:\repos\try-samples-main\LINQ\docs",
+            @"?C:\repos\try-samples-main\LINQ\docs\KindaNewSubdir",
+            @"C:\repos\try-samples-main\LINQ\docs\KindaNewFile.gif*.gif*2424*03.07.2022 19:48:15",
+            @"*C:\repos\try-samples-main\LINQ\docs\lazy-equation.md*.md*3001*19.10.2021 3:30:52",
+            ""
+            };
+
+            //Assert
+            Assert.Equal(actual,expected);
+            File.Delete(fullName);
         }
     }
 }
