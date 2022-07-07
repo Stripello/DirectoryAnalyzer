@@ -178,13 +178,13 @@ namespace DaoTests
             "$2",
             @">C:\repos\try-samples-main\LINQ\docs",
             @"?C:\repos\try-samples-main\LINQ\docs\KindaNewSubdir",
-            @"C:\repos\try-samples-main\LINQ\docs\KindaNewFile.gif*.gif*2424*03.07.2022 19:48:15",
+            @"*C:\repos\try-samples-main\LINQ\docs\KindaNewFile.gif*.gif*2424*03.07.2022 19:48:15",
             @"*C:\repos\try-samples-main\LINQ\docs\lazy-equation.md*.md*3001*19.10.2021 3:30:52",
             ""
             };
 
             //Assert
-            Assert.Equal(actual,expected);
+            Assert.Equal(expected, actual);
             File.Delete(fullName);
         }
     }

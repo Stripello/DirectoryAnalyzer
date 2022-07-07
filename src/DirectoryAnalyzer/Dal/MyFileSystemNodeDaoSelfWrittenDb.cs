@@ -103,7 +103,7 @@ namespace DirectoryAnalyzer.Dal
             var amountOfIdToUpdate = listOfIdToUpdate.Count();
             var fileContent = File.ReadAllLines(dataBaseLocation).ToList();
             var rowsInFile = fileContent.Count;
-            for (int i = 0; i < rowsInFile && amountOfIdToUpdate>0; )
+            for (int i = 0; i < rowsInFile && amountOfIdToUpdate>0; i++)
             {
                 if (fileContent[i].StartsWith('$'))
                 {
@@ -120,11 +120,8 @@ namespace DirectoryAnalyzer.Dal
                             fileContent.RemoveAt(i);
                             rowsInFile--;
                         }
+                        i--;
                     }
-                }
-                else
-                {
-                    i++;
                 }
             }
             var mySb = new StreamWriter(dataBaseLocation);
