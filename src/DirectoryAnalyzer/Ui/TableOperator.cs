@@ -160,5 +160,26 @@ namespace DirectoryAnalyzer
 
             return BuildTable((auxArray), headOfTable);
         }
+
+        internal static IList<string> BuildTable(IList<(object, object)> input, string head = "", 
+            string firstColumnName="", string secondColumnName = "")
+        {
+            var columnNamesExists = (!string.IsNullOrEmpty(firstColumnName)) && (!string.IsNullOrEmpty(secondColumnName));
+            var amountOfRows = input.Count();
+            amountOfRows = columnNamesExists ? amountOfRows + 1: amountOfRows;
+            var subArray = new string[amountOfRows,2];
+            if (columnNamesExists)
+            {
+                subArray[0, 0] = firstColumnName;
+                subArray[0,1] = secondColumnName;
+            }
+            var shift = columnNamesExists ? 1 : 0;
+            for (int i = 0 ; i < amountOfRows-shift; i++)
+            {
+                subArray[i + shift, 0] = input[i].Item1.ToString();
+                subArray[i+shift,1] = input[i].Item2.ToString();
+            }
+            return BuildTable(subArray, head);
+        }
     }
 }
