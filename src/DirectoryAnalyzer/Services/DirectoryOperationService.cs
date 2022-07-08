@@ -28,29 +28,20 @@ namespace DirectoryOperationServices
             return incomingFiles.OrderBy(x => x.Changedate).Take(maxSampleSize).ToArray();
         }
 
-        public static string[,] GetFrequentExtension(IEnumerable<MyFileInfo> incomingFiles)
+        public static IList<(string,int)> GetFrequentExtension(IEnumerable<MyFileInfo> incomingFiles)
         {
-            const int sampleSize = 10;
-            var auxList = (from file in incomingFiles
+            const int maxAnswerSize = 10;
+            (string Extension, int Amount ) result;
+            var answer = (from file in incomingFiles
                            group file by file.Extension ?? "" into g
                            let amount = g.Count()
                            orderby amount descending
                            select new { Extension = g.Key, Amount = amount })
-                          .Take(sampleSize).ToList();
-            var answer = new string[auxList.Count() + 1, 2];
-            answer[0, 0] = "Extension";
-            answer[0, 1] = "Amount of files";
-            var i = 1;
-            foreach (var el in auxList)
-            {
-                answer[i, 0] = el.Extension.ToString() ?? "";
-                answer[i, 1] = el.Amount.ToString();
-                i++;
-            }
+                          .Take(maxAnswerSize).Select(x=> new Tuple<string,int>(x.Extension,x.Amount)).ToList();
+            
             return answer;
         }
-        //bad returning type
-        public static string[,] GetBiggestExtensions(IList<MyFileInfo> myFileInfos)
+        public static IList<(string,long)> GetBiggestExtensions(IList<MyFileInfo> myFileInfos)
         {
             var resultOfAnalys = new List<(string, long)>();
             foreach (var fi in myFileInfos)
@@ -66,19 +57,12 @@ namespace DirectoryOperationServices
                 }
             }
             resultOfAnalys.Sort((x, y) => y.Item2.CompareTo(x.Item2));
-            var answerLength = resultOfAnalys.Count() < 10 ? resultOfAnalys.Count() : 10;
-            var answer = new string[11, 2];
-            answer[0, 0] = "Extension";
-            answer[0, 1] = "Summarized size";
-            for (int i = 0; i < answerLength; i++)
-            {
-                answer[i + 1, 0] = resultOfAnalys[i].Item1;
-                answer[i + 1, 1] = resultOfAnalys[i].Item2.ToString();
-            }
-            return answer;
+            const int maxAnswerLength = 10;
+            
+            return resultOfAnalys.Take(maxAnswerLength).ToList();
         }
-        //bad returning type
-        public static string[,] GetBiggestDirectories(IEnumerable<MyFileSystemNode> allNodes)
+        
+        public static IList<(string,long)> GetBiggestDirectories(IEnumerable<MyFileSystemNode> allNodes)
         {
             var answer = new List<(string, long)>();
 
@@ -88,15 +72,8 @@ namespace DirectoryOperationServices
             }
             var returnTableSize = allNodes.Count() < 10 ? allNodes.Count() + 1 : 11;
             answer = answer.OrderBy(x => x.Item2).Reverse().ToList();
-            var tableToReturn = new string[returnTableSize, 2];
-            tableToReturn[0, 0] = "Directory name";
-            tableToReturn[0, 1] = "Summ size";
-            for (int i = 1; i < returnTableSize; i++)
-            {
-                tableToReturn[i, 0] = answer[i-1].Item1;
-                tableToReturn[i, 1] = answer[i-1].Item2.ToString();
-            }
-            return tableToReturn;
+            
+            return answer;
         }
         //need to take into account difference in counting checksum for different extensions
         public static IList<IList<MyFileInfo>> GetCopies(IList<MyFileInfo> incomingFiles, long minimalSize = 67108864)
