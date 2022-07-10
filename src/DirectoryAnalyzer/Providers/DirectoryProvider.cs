@@ -2,6 +2,10 @@ namespace DirectoryAnalyzer.Providers;
 
 public class DirectoryProvider
 {
+    /// <summary>
+    /// Asks user for directory to operate.
+    /// </summary>
+    /// <returns>Full name of picked directory. Null if user wants to quit.</returns>
     internal static string? AskDirectory()
     {
         string directory;

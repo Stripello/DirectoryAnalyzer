@@ -31,13 +31,12 @@ namespace DirectoryOperationServices
         public static IList<(string,int)> GetFrequentExtension(IEnumerable<MyFileInfo> incomingFiles)
         {
             const int maxAnswerSize = 10;
-            (string Extension, int Amount ) result;
             var answer = (from file in incomingFiles
                            group file by file.Extension ?? "" into g
                            let amount = g.Count()
                            orderby amount descending
                            select new { Extension = g.Key, Amount = amount })
-                          .Take(maxAnswerSize).Select(x=> new Tuple<string,int>(x.Extension,x.Amount)).ToList();
+                          .Take(maxAnswerSize).Select(x => (x.Extension,x.Amount)).ToList();
             
             return answer;
         }
@@ -64,14 +63,14 @@ namespace DirectoryOperationServices
         
         public static IList<(string,long)> GetBiggestDirectories(IEnumerable<MyFileSystemNode> allNodes)
         {
+            const int maxAnswerLength = 10;
             var answer = new List<(string, long)>();
-
             foreach (var node in allNodes)
             {
                 answer.Add(new(node.DirectoryName, node.Content.Sum(x => x.Size)));
             }
             var returnTableSize = allNodes.Count() < 10 ? allNodes.Count() + 1 : 11;
-            answer = answer.OrderBy(x => x.Item2).Reverse().ToList();
+            answer = answer.OrderBy(x => x.Item2).Reverse().Take(maxAnswerLength).ToList();
             
             return answer;
         }

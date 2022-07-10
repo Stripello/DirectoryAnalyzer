@@ -161,7 +161,7 @@ namespace DirectoryAnalyzer
             return BuildTable((auxArray), headOfTable);
         }
 
-        internal static IList<string> BuildTable(IList<(object, object)> input, string head = "", 
+        internal static IList<string> BuildTable<T1,T2>(IList<(T1, T2)> input, string head = "", 
             string firstColumnName="", string secondColumnName = "")
         {
             var columnNamesExists = (!string.IsNullOrEmpty(firstColumnName)) && (!string.IsNullOrEmpty(secondColumnName));

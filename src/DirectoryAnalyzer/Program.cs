@@ -62,15 +62,21 @@ var nodesFromProvider = MyFileSystemNodeProvider.GetFsNodes(neededDirectories.Ex
 var allNodes = nodesFromDb.Concat(nodesFromProvider);
 
 var allFiles = DirectoryOperation.GetAllFiles(allNodes).ToList();
-TableOperator.BuildTable(DirectoryOperation.GetOldestFiles(allFiles), true, false, false, true, "oldest file").ToList().ForEach(x => Console.WriteLine(x));
+TableOperator.BuildTable(DirectoryOperation.GetOldestFiles(allFiles), true, false, false, true, "oldest files")
+    .ToList().ForEach(x => Console.WriteLine(x));
 Console.WriteLine();
-TableOperator.BuildTable(DirectoryOperation.GetBiggestFiles(allFiles), true, false, true, false, "biggest files").ToList().ForEach(x => Console.WriteLine(x));
+TableOperator.BuildTable(DirectoryOperation.GetBiggestFiles(allFiles), true, false, true, false, "biggest files").
+    ToList().ForEach(x => Console.WriteLine(x));
 Console.WriteLine();
-TableOperator.BuildTable(DirectoryOperation.GetFrequentExtension(allFiles), "frequient extensions").ToList().ForEach(x => Console.WriteLine(x));
+TableOperator.BuildTable(DirectoryOperation.GetFrequentExtension(allFiles), head:"frequient extensions",
+    firstColumnName:"extension",secondColumnName:"repetition rate").ToList().ForEach(x => Console.WriteLine(x));
 Console.WriteLine();
-TableOperator.BuildTable(DirectoryOperation.GetBiggestExtensions(allFiles), "biggest extensions").ToList().ForEach(x => Console.WriteLine(x));
+TableOperator.BuildTable(DirectoryOperation.GetBiggestExtensions(allFiles),head: "biggest extensions",
+    firstColumnName:"extendion",secondColumnName:"summarized size").ToList().ForEach(x => Console.WriteLine(x));
 Console.WriteLine();
-TableOperator.BuildTable(DirectoryOperation.GetBiggestDirectories(allNodes), "biggest directories").ToList().ForEach(x => Console.WriteLine(x));
+TableOperator.BuildTable(DirectoryOperation.GetBiggestDirectories(allNodes), 
+    head:"biggest directories (child derictories size doesn't count)",firstColumnName:"name of directory"
+    ,secondColumnName:"summarized content size").ToList().ForEach(x => Console.WriteLine(x));
 var copies = DirectoryOperation.GetCopies(allFiles).ToList();
 if (copies.Count > 0)
 {
@@ -98,7 +104,6 @@ Console.WriteLine("Data base was successfuly update. Now you can close applicati
 
 /* TODO
   1.2 В базу данных писать только данные, ошибки пишутся в другие места
-- SLQ: SqlLite
 - web-api
 - telegram bot(по желанию)
 - обновить данные в БД(пересканировать диск) по запросу
