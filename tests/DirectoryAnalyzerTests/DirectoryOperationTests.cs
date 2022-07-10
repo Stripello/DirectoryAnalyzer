@@ -262,13 +262,7 @@ public class DirectoryOperationTests
         }
 
 		//Act
-		var answer = DirectoryOperation.GetFrequentExtension(testData);
-	    var rowsInAnswer = answer.GetLength(0)-1;
-		var actual = new int [rowsInAnswer];
-		for (int i = 0; i < rowsInAnswer; i++)
-        {
-			actual[i] = Int32.Parse(answer[i + 1, 1]);
-        }
+		var actual = DirectoryOperation.GetFrequentExtension(testData);
 		var expected = actual.OrderBy(x => x).ToArray();
 
 		//Assert
@@ -283,12 +277,9 @@ public class DirectoryOperationTests
 
 		//Act
 		var actual = DirectoryOperation.GetFrequentExtension(data);
-		var expected = new string[1,2] ;
-		expected[0, 0] = "Extension";
-		expected[0, 1] = "Amount of files";
 
 		//Assert
-		Assert.Equal(expected, actual);
+		Assert.Empty(actual);
     }
 
 	[Fact]
@@ -319,14 +310,8 @@ public class DirectoryOperationTests
         }
 
 		//Act
-		var answer = DirectoryOperation.GetBiggestDirectories(testData);
-		var rowsInAnswer = answer.GetLength(0) - 1;
-		var actual = new long[rowsInAnswer];
-		for (int i = 0; i < rowsInAnswer; i++)
-		{
-			actual[i] = Int64.Parse(answer[i + 1, 1]);
-		}
-		var expected = actual.OrderBy(x => x).ToArray();
+		var actual = DirectoryOperation.GetBiggestDirectories(testData);
+		var expected = actual.OrderBy(x => x).ToList();
 
 		//Assert
 		Assert.Equal(expected, actual);
@@ -340,12 +325,9 @@ public class DirectoryOperationTests
 
 		//Act
 		var actual = DirectoryOperation.GetBiggestDirectories(data);
-		var expected = new string[1, 2];
-		expected[0, 0] = "Directory name";
-		expected[0, 1] = "Summ size";
 
 		//Assert
-		Assert.Equal(expected, actual);
+		Assert.Empty(actual);
 	}
 
 	[Fact]
