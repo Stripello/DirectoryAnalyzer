@@ -23,12 +23,18 @@ public class DirectoryOperationTests
 
 		// Act
 		var actual = DirectoryOperation.GetBiggestFiles(testData);
+		var actualIsOrdered = true;
+		for (var i = 0; i < actual.Count-1 ; i++)
+        {
+			if (actual[i].Size < actual[i + 1].Size)
+            {
+				actualIsOrdered = false;
+				break;
+            }
+        }
 
 		// Assert
-		for (var i = 0; i < actual.Count - 1; i++)
-		{
-			Assert.True(actual[i].Size >= actual[i + 1].Size);
-		}
+		Assert.True(actualIsOrdered);
 
 	}
 
@@ -54,6 +60,7 @@ public class DirectoryOperationTests
 
 	#region GetCopiesTests
 	[Fact]
+	//cleanup
 	public void GetCopies_threeAndTwoCopies_Succeed()
 	{
 		//Arrange
@@ -158,115 +165,31 @@ public class DirectoryOperationTests
     {
 		//Arrange
 		var randomizer = new Random();
-		const int testObjects = 10000;
-		var testData = Enumerable.Repeat(new MyFileInfo(),testObjects).ToList();
-		for (int i = 0; i < testObjects; i++)
+		const int amountOfTestObjects = 100000;
+		//according to ASCII2 table min max numeric values relevant to lowcase english letters
+		const int asciiMin = 97;
+		const int asciiMax = 122;
+		var testData = new List<MyFileInfo>();
+		for (int i = 0; i < amountOfTestObjects; i++)
         {
-			var currentRandomValue = randomizer.Next(31);
-            switch (currentRandomValue)
-            {
-                case 0:
-					testData[i].Extension = ".zip";
-					break;
-				case 1:
-					testData[i].Extension = ".xps";
-					break;
-				case 2:
-					testData[i].Extension = ".bin";
-					break;
-				case 3:
-					testData[i].Extension = ".xltm";
-					break;
-				case 4:
-					testData[i].Extension = ".xlt";
-					break;
-				case 5:
-					testData[i].Extension = ".xlsx";
-					break;
-				case 6:
-					testData[i].Extension = ".xls";
-					break;
-				case 7:
-					testData[i].Extension = ".wms";
-					break;
-				case 8:
-					testData[i].Extension = ".wmv";
-					break;
-				case 9:
-					testData[i].Extension = ".wmd";
-					break;
-				case 10:
-					testData[i].Extension = ".wav";
-					break;
-				case 11:
-					testData[i].Extension = ".txt";
-					break;
-				case 12:
-					testData[i].Extension = ".tmp";
-					break;
-				case 13:
-					testData[i].Extension = ".tif";
-					break;
-				case 14:
-					testData[i].Extension = ".sys";
-					break;
-				case 15:
-					testData[i].Extension = ".rtf";
-					break;
-				case 16:
-					testData[i].Extension = ".rar";
-					break;
-				case 17:
-					testData[i].Extension = ".pst";
-					break;
-				case 18:
-					testData[i].Extension = ".psd";
-					break;
-				case 19:
-					testData[i].Extension = ".pptx";
-					break;
-				case 20:
-					testData[i].Extension = ".png";
-					break;
-				case 21:
-					testData[i].Extension = ".pdf";
-					break;
-				case 22:
-					testData[i].Extension = ".mpeg";
-					break;
-				case 23:
-					testData[i].Extension = ".mp4";
-					break;
-				case 24:
-					testData[i].Extension = ".mp3";
-					break;
-				case 25:
-					testData[i].Extension = ".mov";
-					break;
-				case 26:
-					testData[i].Extension = ".midi";
-					break;
-				case 27:
-					testData[i].Extension = ".jpg";
-					break;
-				case 28:
-					testData[i].Extension = ".doc";
-					break;
-				case 29:
-					testData[i].Extension = ".dll";
-                    break;
-                default:
-					testData[i].Extension = ".exe";
-					break;
-            }
+			testData.Add(new MyFileInfo() { Extension = "." + (char)randomizer.Next(asciiMin, asciiMax + 1) +
+				(char)randomizer.Next(asciiMin, asciiMax + 1) + (char)randomizer.Next(asciiMin, asciiMax + 1) });
         }
 
 		//Act
 		var actual = DirectoryOperation.GetFrequentExtension(testData);
-		var expected = actual.OrderBy(x => x).ToArray();
+        var actualIsOrdered = true;
+		for (int i = 0; i < actual.Count - 1; i++)
+        {
+			if (actual[i].Item2 < actual[i + 1].Item2)
+            {
+				actualIsOrdered = false;
+				break;
+            }
+        }
 
-		//Assert
-		Assert.Equal(expected, actual);
+        //Assert
+        Assert.True(actualIsOrdered);
     }
 
 	[Fact]
@@ -297,11 +220,12 @@ public class DirectoryOperationTests
 		var randomizer = new Random();
 		const int amountOfTestObjects = 100;
 		const int maxRandomFiles = 20;
-		const int maxFileSize = 2 ^ 32;
+		const int maxFileSize = int.MaxValue;
 		var random = new Random();
-		var testData = Enumerable.Repeat(new MyFileSystemNode() { Content = new List<MyFileInfo>()}, amountOfTestObjects).ToList();
+		var testData = new List<MyFileSystemNode>();
 		for (int i = 0; i < amountOfTestObjects; i++)
         {
+			testData.Add(new MyFileSystemNode() { Content = new List<MyFileInfo>()});
 			var currentAmountOfFiles = random.Next(maxRandomFiles);
 			for (int j = 0; j < currentAmountOfFiles; j++)
             {
@@ -311,10 +235,18 @@ public class DirectoryOperationTests
 
 		//Act
 		var actual = DirectoryOperation.GetBiggestDirectories(testData);
-		var expected = actual.OrderBy(x => x).ToList();
+		var actualIsOrdered = true;
+		for (int i = 0; i < actual.Count-1; i++)
+        {
+			if (actual[i].Item2 < actual[i + 1].Item2)
+            {
+				actualIsOrdered = false;
+				break;
+            }
+        }
 
 		//Assert
-		Assert.Equal(expected, actual);
+		Assert.True(actualIsOrdered);
 	}
 
 	[Fact]
