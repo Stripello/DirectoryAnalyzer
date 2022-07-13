@@ -47,8 +47,19 @@ namespace DirectoryAnalyzer
             var incomingObject = obj as MyFileSystemNode;
             if (this.Id != incomingObject.Id || this.DirectoryName != incomingObject.DirectoryName)
             {
-                return false 
+                return false;
             }
+            if (this.ChildrenDirectories.Except(incomingObject.ChildrenDirectories).Count() != 0 ||
+                incomingObject.ChildrenDirectories.Except(this.ChildrenDirectories).Count() != 0)
+            {
+                return false;
+            }
+            if (this.Content.Except(incomingObject.Content).Count() != 0 ||
+                incomingObject.Content.Except(this.Content).Count() != 0)
+            {
+                return false;
+            }
+
             return true;
         }
 

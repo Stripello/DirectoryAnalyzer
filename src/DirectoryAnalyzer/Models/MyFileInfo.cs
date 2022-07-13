@@ -1,5 +1,7 @@
-﻿namespace DirectoryAnalyzer.Models;
-public class MyFileInfo
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace DirectoryAnalyzer.Models;
+public class MyFileInfo : IEqualityComparer<MyFileInfo>
 {
     public string Name { get; set; }
     public string Extension { get; set; }
@@ -31,6 +33,7 @@ public class MyFileInfo
         Size = 0;
         Changedate = DateTime.MaxValue;
     }
+    
 
     public override string ToString()
     {
@@ -42,5 +45,36 @@ public class MyFileInfo
         var tempArray = stringToParse[1..].Split('*');
         return new MyFileInfo() { Name = tempArray[0], Extension = tempArray[1], Size = long.Parse(tempArray[2]), 
             Changedate = DateTime.Parse(tempArray[3]) };
+    }
+    public override bool Equals(object? obj)
+    {
+        if (obj == null)
+        {
+            if (this == null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        var castObj = obj as MyFileInfo;
+        if (castObj.Name != this.Name || castObj.Extension != this.Extension ||
+            castObj.Size != this.Size || castObj.Changedate != this.Changedate)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    bool IEqualityComparer<MyFileInfo>.Equals(MyFileInfo? x, MyFileInfo? y)
+    {
+        return x.Equals(y);
+    }
+
+    int IEqualityComparer<MyFileInfo>.GetHashCode([DisallowNull] MyFileInfo obj)
+    {
+        return obj.Name.GetHashCode() + obj.Extension.GetHashCode() + (int)obj.Size/int.MaxValue + obj.Changedate.GetHashCode();
     }
 }

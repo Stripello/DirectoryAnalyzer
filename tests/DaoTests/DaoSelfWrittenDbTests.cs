@@ -238,5 +238,38 @@ namespace DaoTests
             Assert.Equal(expected, actual);
             File.Delete(fullName);
         }
+        [Fact]
+        public void DebugTest()
+        {
+
+            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var name = "DbForUpdate";
+            var fullName = directory + "\\" + name + ".txt";
+            File.Delete(fullName);
+            var myBd = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
+            var nodesToUpdate = new List<MyFileSystemNode>() { new MyFileSystemNode() {
+                DirectoryName = @"C:\repos\try-samples-main\LINQ\docs",
+                ChildrenDirectories = new List<string> { @"C:\repos\try-samples-main\LINQ\docs\KindaNewSubdir" },
+            Content = new List<MyFileInfo>(){
+                new MyFileInfo() { Name = @"C:\repos\try-samples-main\LINQ\docs\KindaNewFile.gif" ,
+                Extension = ".gif",Size = 2424,Changedate = DateTime.Parse("03.07.2022 19:48:15")},
+                new MyFileInfo () { Name = @"C:\repos\try-samples-main\LINQ\docs\lazy-equation.md",
+                Extension = ".md", Size = 3001, Changedate = DateTime.Parse("19.10.2021 3:30:52")}
+            }
+            } };
+            var nodesToUpdate2 = new List<MyFileSystemNode>() { new MyFileSystemNode() {
+                DirectoryName = @"C:\repos\try-samples-main\LINQ\docs",
+                ChildrenDirectories = new List<string> { @"C:\repos\try-samples-main\LINQ\docs\KindaNewSubdir" },
+            Content = new List<MyFileInfo>(){
+                new MyFileInfo() { Name = @"C:\repos\try-samples-main\LINQ\docs\KindaNewFile.gif" ,
+                Extension = ".gif",Size = 2424,Changedate = DateTime.Parse("03.07.2022 19:48:15")},
+                new MyFileInfo () { Name = @"C:\repos\try-samples-main\LINQ\docs\lazy-equation.md",
+                Extension = ".md", Size = 3001, Changedate = DateTime.Parse("19.10.2021 3:30:52")}
+            }
+            } };
+
+            var bo = nodesToUpdate[0].Equals( nodesToUpdate2[0]);
+            Assert.True(bo);
+        }
     }
 }
