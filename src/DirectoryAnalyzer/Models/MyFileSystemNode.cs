@@ -31,6 +31,27 @@ namespace DirectoryAnalyzer
             return sb.ToString();
         }
 
+        public override bool Equals(object? obj)
+        {
+            if (obj == null)
+            {
+                if (this == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            var incomingObject = obj as MyFileSystemNode;
+            if (this.Id != incomingObject.Id || this.DirectoryName != incomingObject.DirectoryName)
+            {
+                return false 
+            }
+            return true;
+        }
+
         public static MyFileSystemNode Parse(string[] incomingStrings)
         {
             var id = int.Parse(incomingStrings[0][1..]);

@@ -12,7 +12,7 @@ namespace DaoTests
     public class DaoSelfWrittenDbTests
     {
         [Fact]
-        public void ClassConstructor_SuccessfullDbCreation()
+        public void ClassConstructor_ValidDirectory_SuccessfulCreation()
         {
             //Arrange
             var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
@@ -26,6 +26,19 @@ namespace DaoTests
             //Assert
             Assert.True(File.Exists(fullName));
             File.Delete(fullName);
+        }
+
+        [Fact]
+        public void ClassConstructor_InvalidDirectory_Exception()
+        {
+            var realDirectory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var wrongDirectory = realDirectory+@"\\";
+            var randomizer = new Random();
+            while (Directory.Exists(wrongDirectory))
+            {
+                wrongDirectory += (char)randomizer.Next(65,124);
+            }
+            Assert.Throws<System.IO.DirectoryNotFoundException>(()=>_=new MyFileSystemNodeDaoSelfWrittenDb(wrongDirectory));
         }
 
         [Fact]
@@ -75,29 +88,41 @@ namespace DaoTests
                     Extension = ".cs",Size = 2900,Changedate =DateTime.Parse("19.10.2021 3:30:52")} }
             });
 
+            var addedNodesNames = data.Select(x => x.DirectoryName).ToList();
             //Act
             myDb.Add(data);
+            var actual = myDb.Read(addedNodesNames).Select(x=>x.ToString());
+            var expected = data.Select(x=>x.ToString());
 
+            //duct tape using ToString 
             //Assert
-            var expected = new string[] { "$1",
-            @">C:\repos\try-samples-main\LINQ",
-            @"?C:\repos\try-samples-main\LINQ\docs",
-            @"?C:\repos\try-samples-main\LINQ\src",
-            @"*C:\repos\try-samples-main\LINQ\readme.md*.md*1489*19.10.2021 3:30:52",
-            "",
-            "$2",
-            @">C:\repos\try-samples-main\LINQ\docs",
-            @"*C:\repos\try-samples-main\LINQ\docs\lazy-equation.md*.md*3001*19.10.2021 3:30:52",
-            @"*C:\repos\try-samples-main\LINQ\docs\query-syntax.md*.md*2068*19.10.2021 3:30:52",
-            "",
-            "$3",
-            @">C:\repos\try-samples-main\LINQ\src",
-            @"*C:\repos\try-samples-main\LINQ\src\LINQ.csproj*.csproj*431*19.10.2021 3:30:52",
-            @"*C:\repos\try-samples-main\LINQ\src\Program.cs*.cs*2900*19.10.2021 3:30:52",
-            ""};
-            var actual = File.ReadAllLines(fullName);
             Assert.Equal(expected, actual);
             File.Delete(fullName);
+        }
+
+        [Fact]
+        public void Add_NullNode_Fail()
+        {
+            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var name = "DbForNullNodes";
+            var fullName = directory + "\\" + name + ".txt";
+            File.Delete(fullName);
+            var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
+            var data = new List<MyFileSystemNode>();
+            data.Add(null);
+            Assert.Throws<System.NullReferenceException>(()=>myDb.Add(data));
+            File.Delete(fullName);
+        }
+        [Fact]
+        public void Add_NullList_Fail()
+        {
+            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var name = "DbForNullList";
+            var fullName = directory + "\\" + name + ".txt";
+            File.Delete(fullName);
+            var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
+            List<MyFileSystemNode> data = null;
+            Assert.Throws<System.NullReferenceException>(() => myDb.Add(data));
         }
 
         [Fact]
@@ -125,6 +150,32 @@ namespace DaoTests
             Assert.Equal(expected,actual);
         }
 
+        [Fact]
+        public void Read_ArrayOfNulls_Succed()
+        {
+            //Arrange
+            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var name = "DbForReadingStaticNodes";
+            var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
+            var arrayOfNulls = new List<string>() { null, null, null };
+
+            //Act
+            var actual = myDb.Read(arrayOfNulls);
+            var expected = new List<MyFileSystemNode>() { }; 
+
+            //Assert
+            Assert.Equal(actual, expected);
+        }
+
+        [Fact]
+        public void Read_NullArray_Fail()
+        {
+            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var name = "DbForReadingStaticNodes";
+            var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
+
+            Assert.Throws<ArgumentNullException>(()=>myDb.Read(null));
+        }
         [Fact]
         public void Update_StaticData_Succed()
         {
