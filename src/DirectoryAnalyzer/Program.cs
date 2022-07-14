@@ -119,4 +119,5 @@ Console.WriteLine("Data base was successfuly update. Now you can close applicati
  * cleanup
  * length check
  * auto delatate console output
+ * trim copies of files in DAO methods
  */

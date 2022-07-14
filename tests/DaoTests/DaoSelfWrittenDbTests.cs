@@ -4,8 +4,8 @@ using DirectoryAnalyzer.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Xunit;
 using System.Linq;
+using Xunit;
 
 namespace DaoTests
 {
@@ -32,13 +32,13 @@ namespace DaoTests
         public void ClassConstructor_InvalidDirectory_Exception()
         {
             var realDirectory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
-            var wrongDirectory = realDirectory+@"\\";
+            var wrongDirectory = realDirectory + @"\\";
             var randomizer = new Random();
             while (Directory.Exists(wrongDirectory))
             {
-                wrongDirectory += (char)randomizer.Next(65,124);
+                wrongDirectory += (char)randomizer.Next(65, 124);
             }
-            Assert.Throws<System.IO.DirectoryNotFoundException>(()=>_=new MyFileSystemNodeDaoSelfWrittenDb(wrongDirectory));
+            Assert.Throws<System.IO.DirectoryNotFoundException>(() => _ = new MyFileSystemNodeDaoSelfWrittenDb(wrongDirectory));
         }
 
         [Fact]
@@ -87,16 +87,14 @@ namespace DaoTests
                     new MyFileInfo(){ Name = @"C:\repos\try-samples-main\LINQ\src\Program.cs",
                     Extension = ".cs",Size = 2900,Changedate =DateTime.Parse("19.10.2021 3:30:52")} }
             });
-
             var addedNodesNames = data.Select(x => x.DirectoryName).ToList();
+
             //Act
             myDb.Add(data);
-            var actual = myDb.Read(addedNodesNames).Select(x=>x.ToString());
-            var expected = data.Select(x=>x.ToString());
+            var actual = myDb.Read(addedNodesNames);
 
-            //duct tape using ToString 
             //Assert
-            Assert.Equal(expected, actual);
+            Assert.Equal(data, actual);
             File.Delete(fullName);
         }
 
@@ -110,7 +108,7 @@ namespace DaoTests
             var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
             var data = new List<MyFileSystemNode>();
             data.Add(null);
-            Assert.Throws<System.NullReferenceException>(()=>myDb.Add(data));
+            Assert.Throws<System.NullReferenceException>(() => myDb.Add(data));
             File.Delete(fullName);
         }
         [Fact]
@@ -134,20 +132,19 @@ namespace DaoTests
             var fullName = directory + "\\" + name + ".txt";
 
             //Act
-            var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directory,name);
-            var actual = myDb.Read(new List<string>() { @"C:\repos\try-samples-main\LINQ\src" }).Select(x=>x.ToString());
+            var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
+            var actual = myDb.Read(new List<string>() { @"C:\repos\try-samples-main\LINQ\src" });
             var expected = new List<MyFileSystemNode>() { new MyFileSystemNode() { Id =3 ,
             DirectoryName = @"C:\repos\try-samples-main\LINQ\src", ChildrenDirectories = new List<string>(),
-            Content = new List<MyFileInfo>(){ 
+            Content = new List<MyFileInfo>(){
                 new MyFileInfo() {Name = @"C:\repos\try-samples-main\LINQ\src\LINQ.csproj",Extension = ".csproj",
                 Size = 431, Changedate = DateTime.Parse("19.10.2021 3:30:52")} ,
                 new MyFileInfo(){Name = @"C:\repos\try-samples-main\LINQ\src\Program.cs" , Extension = ".cs",
                 Size=2900, Changedate = DateTime.Parse("19.10.2021 3:30:52")}
-            } } }.Select(x=>x.ToString());
+            } } };
 
-            //ducttape using converting to strings
             //Assert
-            Assert.Equal(expected,actual);
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
@@ -161,7 +158,7 @@ namespace DaoTests
 
             //Act
             var actual = myDb.Read(arrayOfNulls);
-            var expected = new List<MyFileSystemNode>() { }; 
+            var expected = new List<MyFileSystemNode>() { };
 
             //Assert
             Assert.Equal(actual, expected);
@@ -174,7 +171,7 @@ namespace DaoTests
             var name = "DbForReadingStaticNodes";
             var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
 
-            Assert.Throws<ArgumentNullException>(()=>myDb.Read(null));
+            Assert.Throws<ArgumentNullException>(() => myDb.Read(null));
         }
         [Fact]
         public void Update_StaticData_Succed()
@@ -184,92 +181,55 @@ namespace DaoTests
             var name = "DbForUpdate";
             var fullName = directory + "\\" + name + ".txt";
             File.Delete(fullName);
-            File.WriteAllLines(fullName, new string[] { "$1",
-            @">C:\repos\try-samples-main\LINQ",
-            @"?C:\repos\try-samples-main\LINQ\docs",
-            @"?C:\repos\try-samples-main\LINQ\src",
-            @"*C:\repos\try-samples-main\LINQ\readme.md*.md*1489*19.10.2021 3:30:52",
-            "",
-            "$2",
-            @">C:\repos\try-samples-main\LINQ\docs",
-            @"*C:\repos\try-samples-main\LINQ\docs\lazy-equation.md*.md*3001*19.10.2021 3:30:52",
-            @"*C:\repos\try-samples-main\LINQ\docs\query-syntax.md*.md*2068*19.10.2021 3:30:52",
-            "",
-            "$3",
-            @">C:\repos\try-samples-main\LINQ\src",
-            @"*C:\repos\try-samples-main\LINQ\src\LINQ.csproj*.csproj*431*19.10.2021 3:30:52",
-            @"*C:\repos\try-samples-main\LINQ\src\Program.cs*.cs*2900*19.10.2021 3:30:52",
-            ""});
+            var originalDbContent = new List<MyFileSystemNode> {
+                new MyFileSystemNode{Id =1 ,DirectoryName = @"C:\repos\try-samples-main\LINQ",
+                    ChildrenDirectories = new List<string> { @"C:\repos\try-samples - main\LINQ\docs",
+                        @"C:\repos\try-samples-main\LINQ\readme.md*.md*1489*19.10.2021 3:30:52" } ,
+                Content = new List<MyFileInfo>{ new MyFileInfo(){Name = @"C:\repos\try-samples-main\LINQ\readme.md",
+                    Extension =".md",Size =1489 , Changedate = DateTime.Parse("19.10.2021 3:30:52") } } },
+
+                new MyFileSystemNode{Id =2 ,DirectoryName =@"C:\repos\try-samples-main\LINQ\docs",
+                ChildrenDirectories = new List<string>{ },
+                Content = new List<MyFileInfo>{ new MyFileInfo() { Name = @"C:\repos\try-samples-main\LINQ\docs\lazy-equation.md",
+                Extension = ".md",Size = 3001, Changedate = DateTime.Parse("19.10.2021 3:30:52")},
+                new MyFileInfo(){ Name = @"C:\repos\try-samples-main\LINQ\docs\query-syntax.md",Extension = ".md",
+                Size = 2068,Changedate = DateTime.Parse("19.10.2021 3:30:52")} } },
+
+                new MyFileSystemNode{Id =3 ,DirectoryName =@"C:\repos\try-samples-main\LINQ\src",
+                ChildrenDirectories = new List<string>{ },
+                Content = new List<MyFileInfo>{ new MyFileInfo { Name = @"C:\repos\try-samples-main\LINQ\src\LINQ.csproj" ,
+                Extension = ".csproj", Size = 431, Changedate = DateTime.Parse("19.10.2021 3:30:52")} ,
+                new MyFileInfo{Name = @"C:\repos\try-samples-main\LINQ\src\Program.cs" ,Extension = ".cs",
+                Size =2900, Changedate = DateTime.Parse("19.10.2021 3:30:52")} } }
+                };
+            var myBd = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
+            myBd.Add(originalDbContent);
 
             //Act
-            var myBd = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
-            var nodesToUpdate = new List<MyFileSystemNode>() { new MyFileSystemNode() {
+            var nodeToUpdate = new MyFileSystemNode()
+            {
                 DirectoryName = @"C:\repos\try-samples-main\LINQ\docs",
                 ChildrenDirectories = new List<string> { @"C:\repos\try-samples-main\LINQ\docs\KindaNewSubdir" },
-            Content = new List<MyFileInfo>(){ 
+                Content = new List<MyFileInfo>(){
                 new MyFileInfo() { Name = @"C:\repos\try-samples-main\LINQ\docs\KindaNewFile.gif" ,
                 Extension = ".gif",Size = 2424,Changedate = DateTime.Parse("03.07.2022 19:48:15")},
                 new MyFileInfo () { Name = @"C:\repos\try-samples-main\LINQ\docs\lazy-equation.md",
                 Extension = ".md", Size = 3001, Changedate = DateTime.Parse("19.10.2021 3:30:52")}
             }
-            } };
-            myBd.UpdateDb(nodesToUpdate);
-            var actual = File.ReadAllLines(fullName);
-            var expected = new string[] { "$1",
-            @">C:\repos\try-samples-main\LINQ",
-            @"?C:\repos\try-samples-main\LINQ\docs",
-            @"?C:\repos\try-samples-main\LINQ\src",
-            @"*C:\repos\try-samples-main\LINQ\readme.md*.md*1489*19.10.2021 3:30:52",
-            "",
-            "$3",
-            @">C:\repos\try-samples-main\LINQ\src",
-            @"*C:\repos\try-samples-main\LINQ\src\LINQ.csproj*.csproj*431*19.10.2021 3:30:52",
-            @"*C:\repos\try-samples-main\LINQ\src\Program.cs*.cs*2900*19.10.2021 3:30:52",
-            "",
-            "$2",
-            @">C:\repos\try-samples-main\LINQ\docs",
-            @"?C:\repos\try-samples-main\LINQ\docs\KindaNewSubdir",
-            @"*C:\repos\try-samples-main\LINQ\docs\KindaNewFile.gif*.gif*2424*03.07.2022 19:48:15",
-            @"*C:\repos\try-samples-main\LINQ\docs\lazy-equation.md*.md*3001*19.10.2021 3:30:52",
-            ""
             };
+            myBd.UpdateDb(new List<MyFileSystemNode> { nodeToUpdate });
+            var actual = myBd.Read(new string[] { @"C:\repos\try-samples-main\LINQ",
+                @"C:\repos\try-samples-main\LINQ\docs" ,
+            @"C:\repos\try-samples-main\LINQ\src"});
+            nodeToUpdate.Id = 2;
+            var expected = new List<MyFileSystemNode> (originalDbContent);
+            expected.RemoveAt(1);
+            expected.Add(nodeToUpdate);
 
             //Assert
             Assert.Equal(expected, actual);
             File.Delete(fullName);
         }
-        [Fact]
-        public void DebugTest()
-        {
 
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
-            var name = "DbForUpdate";
-            var fullName = directory + "\\" + name + ".txt";
-            File.Delete(fullName);
-            var myBd = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
-            var nodesToUpdate = new List<MyFileSystemNode>() { new MyFileSystemNode() {
-                DirectoryName = @"C:\repos\try-samples-main\LINQ\docs",
-                ChildrenDirectories = new List<string> { @"C:\repos\try-samples-main\LINQ\docs\KindaNewSubdir" },
-            Content = new List<MyFileInfo>(){
-                new MyFileInfo() { Name = @"C:\repos\try-samples-main\LINQ\docs\KindaNewFile.gif" ,
-                Extension = ".gif",Size = 2424,Changedate = DateTime.Parse("03.07.2022 19:48:15")},
-                new MyFileInfo () { Name = @"C:\repos\try-samples-main\LINQ\docs\lazy-equation.md",
-                Extension = ".md", Size = 3001, Changedate = DateTime.Parse("19.10.2021 3:30:52")}
-            }
-            } };
-            var nodesToUpdate2 = new List<MyFileSystemNode>() { new MyFileSystemNode() {
-                DirectoryName = @"C:\repos\try-samples-main\LINQ\docs",
-                ChildrenDirectories = new List<string> { @"C:\repos\try-samples-main\LINQ\docs\KindaNewSubdir" },
-            Content = new List<MyFileInfo>(){
-                new MyFileInfo() { Name = @"C:\repos\try-samples-main\LINQ\docs\KindaNewFile.gif" ,
-                Extension = ".gif",Size = 2424,Changedate = DateTime.Parse("03.07.2022 19:48:15")},
-                new MyFileInfo () { Name = @"C:\repos\try-samples-main\LINQ\docs\lazy-equation.md",
-                Extension = ".md", Size = 3001, Changedate = DateTime.Parse("19.10.2021 3:30:52")}
-            }
-            } };
-
-            var bo = nodesToUpdate[0].Equals( nodesToUpdate2[0]);
-            Assert.True(bo);
-        }
     }
 }

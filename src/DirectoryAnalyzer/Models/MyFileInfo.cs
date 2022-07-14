@@ -39,6 +39,10 @@ public class MyFileInfo : IEqualityComparer<MyFileInfo>
     {
         return ($"*{Name}*{Extension}*{Size}*{Changedate}");
     }
+    public override int GetHashCode()
+    {
+        return ($"{ Name}{Extension}{Size}{Changedate}").GetHashCode();
+    }
 
     public static MyFileInfo Parse(string stringToParse)
     {
@@ -75,6 +79,6 @@ public class MyFileInfo : IEqualityComparer<MyFileInfo>
 
     int IEqualityComparer<MyFileInfo>.GetHashCode([DisallowNull] MyFileInfo obj)
     {
-        return obj.Name.GetHashCode() + obj.Extension.GetHashCode() + (int)obj.Size/int.MaxValue + obj.Changedate.GetHashCode();
+        return ($"{ obj.Name}{obj.Extension}{obj.Size}{obj.Changedate}").GetHashCode();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ using DirectoryAnalyzer.Models;
 
 namespace DirectoryAnalyzer
 {
-    public class MyFileSystemNode
+    public class MyFileSystemNode : IEqualityComparer<MyFileSystemNode>
     {
 
         public int Id { get; set; }
@@ -54,8 +55,8 @@ namespace DirectoryAnalyzer
             {
                 return false;
             }
-            if (this.Content.Except(incomingObject.Content).Count() != 0 ||
-                incomingObject.Content.Except(this.Content).Count() != 0)
+            if (this.Content.Except(incomingObject.Content,(IEqualityComparer<MyFileInfo>)new MyFileInfo()).Count() != 0 ||
+                incomingObject.Content.Except(this.Content, (IEqualityComparer<MyFileInfo>)new MyFileInfo()).Count() != 0)
             {
                 return false;
             }
@@ -79,6 +80,26 @@ namespace DirectoryAnalyzer
                 content.Add(MyFileInfo.Parse(incomingStrings[i][1..]));
             }
             return new MyFileSystemNode() { Id = id, DirectoryName = directoryName, ChildrenDirectories = childrenDirectories, Content = content};
+        }
+
+        public bool Equals(MyFileSystemNode? x, MyFileSystemNode? y)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetHashCode([DisallowNull] MyFileSystemNode obj)
+        {
+            var answer = Id;
+            answer += DirectoryName.GetHashCode();
+            foreach (var subdir in ChildrenDirectories)
+            {
+                answer += subdir.GetHashCode();
+            }
+            foreach (var file in Content)
+            {
+                answer += file.GetHashCode();
+            }
+            return answer;
         }
     }
 }
