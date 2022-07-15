@@ -14,13 +14,14 @@ namespace DaoTests
 {
     public class DaoLightDbTests
     {
+        /*
         [Fact]
         public void TryMock()
         {
             var mock = new Mock<LiteDatabase>();
             mock.SetReturnsDefault<MyFileSystemNode>(new MyFileSystemNode());
-            MyFileSystemNodeDaoLightDb db = mock;
-            Assert.
+            mock.Setup(a=>a.GetCollection());
         }
+        */
     }
 }
