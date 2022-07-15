@@ -30,7 +30,7 @@ namespace DirectoryAnalyzer.Dal
             using (var db = new LiteDatabase(dataBaseLocation))
             {
                 var storedFileSystemNodes = db.GetCollection<MyFileSystemNode>("FileSystemNodes");
-                answer.AddRange( storedFileSystemNodes.Query().Where(x=> directoriesToSearch.Contains(x.DirectoryName)).ToList() );
+                answer.AddRange( storedFileSystemNodes.Query().Where(x => directoriesToSearch.Contains(x.DirectoryName)).ToList() );
             }
             return answer;
         }

@@ -1,6 +1,6 @@
 ﻿namespace DirectoryAnalyzer.Dal
 {
-    internal interface IMyFileSystemNodeDao
+    public interface IMyFileSystemNodeDao
     {
         void Add(IList<MyFileSystemNode> node);
         /// <summary>
