@@ -180,5 +180,105 @@ namespace DaoTests
             Assert.Equal(expected, actual);
         }
         #endregion
+
+        #region Update
+        [Fact]
+        public void Update_PresentedInDb_Succed()
+        {
+            //Arrange
+            var DS = Path.DirectorySeparatorChar.ToString();
+            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + DS +"TestData";
+            var name = "LiteDbForUpdate";
+            var fullNameOriginal = directory + DS + name + ".db";
+            var fullName = directory + DS + name + "Copy.db";
+            File.Copy(fullNameOriginal, fullName,true);
+            var nodesToUpdate = new MyFileSystemNode();
+            var testDb = new MyFileSystemNodeDaoLightDb(directory, name);
+
+            //Act
+            var expected = new List<MyFileSystemNode> {
+                new MyFileSystemNode{Id =2 ,DirectoryName =@"C:\repos\try-samples-main\LINQ\docs",
+                ChildrenDirectories = new List<string>{ },
+                Content = new List<MyFileInfo>{ new MyFileInfo() { Name = @"FirstNewFile.ne",
+                Extension = ".ne",Size = 3001, Changedate = DateTime.Parse("10.12.2020 2:50:12")},
+                new MyFileInfo(){ Name = @"SecondNewFile.nne",Extension = ".nne",
+                Size = 2068,Changedate = DateTime.Parse("10.12.2020 2:50:12")} } }
+                };
+            testDb.UpdateDb(expected);
+            var actual = testDb.Read(expected.Select(x=>x.DirectoryName).ToList());
+
+            //Assert
+            Assert.Equal(expected, actual);
+            File.Delete(fullName);
+        }
+
+        [Fact]
+        public void Update_NotPresentedInDb_Succed()
+        {
+            //Arrange
+            var DS = Path.DirectorySeparatorChar.ToString();
+            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + DS + "TestData";
+            var name = "LiteDbForUpdate";
+            var fullNameOriginal = directory + DS + name + ".db";
+            var fullName = directory + DS + name + "Copy.db";
+            File.Copy(fullNameOriginal, fullName, true);
+            var expected = File.ReadAllBytes(fullName);
+            var testDb = new MyFileSystemNodeDaoLightDb(directory, name);
+
+            //Act
+            var notPresentedDataInDbToUpdate = new List<MyFileSystemNode> {
+                new MyFileSystemNode{Id =5 ,DirectoryName =@"C:\SomeNewDir",
+                ChildrenDirectories = new List<string>{ },
+                Content = new List<MyFileInfo>{ new MyFileInfo() { Name = @"SomeNewFile.snf",
+                Extension = ".snf",Size = 3001, Changedate = DateTime.Parse("10.12.2020 2:50:12")}
+                } } };
+            testDb.UpdateDb(notPresentedDataInDbToUpdate);
+            var actual = File.ReadAllBytes(fullName);
+
+            //Assert
+            Assert.Equal(expected, actual);
+            File.Delete(fullName);
+        }
+
+        [Fact]
+        public void Update_EmptyData_NoChanges()
+        {
+            //Arrange
+            var DS = Path.DirectorySeparatorChar.ToString();
+            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + DS + "TestData";
+            var name = "LiteDbForUpdate";
+            var fullNameOriginal = directory + DS + name + ".db";
+            var fullName = directory + DS + name + "Copy.db";
+            File.Copy(fullNameOriginal, fullName, true);
+            var expected = File.ReadAllBytes(fullName);
+            var testDb = new MyFileSystemNodeDaoLightDb(directory, name);
+
+            //Act
+            testDb.UpdateDb(new List<MyFileSystemNode>{});
+            var actual = File.ReadAllBytes(fullName);
+
+            //Assert
+            Assert.Equal(expected, actual);
+            File.Delete(fullName);
+        }
+
+        [Fact]
+        public void Update_NullData_Exception()
+        {
+            //Arrange
+            var DS = Path.DirectorySeparatorChar.ToString();
+            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + DS + "TestData";
+            var name = "LiteDbForUpdate";
+            var fullNameOriginal = directory + DS + name + ".db";
+            var fullName = directory + DS + name + "Copy.db";
+            File.Copy(fullNameOriginal, fullName, true);
+            var expected = File.ReadAllBytes(fullName);
+            var testDb = new MyFileSystemNodeDaoLightDb(directory, name);
+
+            //Assert
+            Assert.Throws<ArgumentNullException>( ()=> testDb.UpdateDb(null) );
+            File.Delete(fullName);
+        }
+        #endregion
     }
 }

@@ -36,7 +36,11 @@ namespace DirectoryAnalyzer.Dal
         }
         public void UpdateDb(IList<MyFileSystemNode> nodesToUpdate)
         {
-            throw new NotImplementedException();
+            using (var db = new LiteDatabase(dataBaseLocation))
+            {
+                var storedFileSystemNodes = db.GetCollection<MyFileSystemNode>("FileSystemNodes");
+                storedFileSystemNodes.Update(nodesToUpdate);
+            }
         }
     }
 }
