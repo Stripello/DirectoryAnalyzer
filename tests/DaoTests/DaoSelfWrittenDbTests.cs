@@ -108,7 +108,7 @@ namespace DaoTests
             var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
             var data = new List<MyFileSystemNode>();
             data.Add(null);
-            Assert.Throws<System.NullReferenceException>(() => myDb.Add(data));
+            Assert.Throws<NullReferenceException>(() => myDb.Add(data));
             File.Delete(fullName);
         }
         [Fact]
@@ -120,7 +120,7 @@ namespace DaoTests
             File.Delete(fullName);
             var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
             List<MyFileSystemNode> data = null;
-            Assert.Throws<System.NullReferenceException>(() => myDb.Add(data));
+            Assert.Throws<NullReferenceException>(() => myDb.Add(data));
         }
 
         [Fact]

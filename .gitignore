@@ -10,6 +10,7 @@
 **/MyDB.db
 **/MyDB.txt
 **.db
+!LiteDbForReading.db
 **/MySelfWrittenDb.txt
 **/MyLiteDb.db
 **/MySQLite.db

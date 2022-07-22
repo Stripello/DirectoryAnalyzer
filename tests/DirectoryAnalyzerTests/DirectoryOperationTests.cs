@@ -104,6 +104,17 @@ public class DirectoryOperationTests
 		//Assert
 		Assert.Equal(actual, new List<List<MyFileInfo>>() { });
 	}
+
+	[Fact]
+	public void GetCopies_EmptyInput_Succeed()
+	{
+		//Arrange
+		var testData = new List<MyFileInfo>();
+		//Act
+		var actual = DirectoryOperation.GetCopies(testData);
+		//Assert
+		Assert.Equal(actual, new List<List<MyFileInfo>>() { });
+	}
 	[Fact]
 	public void GetCopies_invalidData_Failed()
 	{

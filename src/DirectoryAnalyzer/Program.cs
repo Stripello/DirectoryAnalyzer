@@ -3,49 +3,21 @@ using DirectoryAnalyzer.Dal;
 using DirectoryAnalyzer.Models;
 using DirectoryAnalyzer.Providers;
 using DirectoryOperationServices;
+using System.Configuration;
 
 
-#region debug unit test for dummies zone
-/*
-var directoryName = @"C:\repos\Git repos\DirectoryAnalyzer\tests\DaoTests\TestData";
-var fileName = "DbForUpdate";
-var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directoryName, fileName);
-var fullName = directoryName + "\\" + fileName + ".txt";
-var nodesToUpdate = new List<MyFileSystemNode>() { new MyFileSystemNode() {
-                DirectoryName = @"C:\repos\try-samples-main\LINQ\docs",
-                ChildrenDirectories = new List<string> { @"C:\repos\try-samples-main\LINQ\docs\KindaNewSubdir" },
-            Content = new List<MyFileInfo>(){
-                new MyFileInfo() { Name = @"C:\repos\try-samples-main\LINQ\docs\KindaNewFile.gif" ,
-                Extension = ".gif",Size = 2424,Changedate = DateTime.Parse("03.07.2022 19:48:15")},
-                new MyFileInfo () { Name = @"C:\repos\try-samples-main\LINQ\docs\lazy-equation.md",
-                Extension = ".md", Size = 3001, Changedate = DateTime.Parse("19.10.2021 3:30:52")}
-                  }
-            } };
-myDb.UpdateDb(nodesToUpdate);
+ConnectionStringSettingsCollection settings =
+            ConfigurationManager.ConnectionStrings;
 
-var actual = File.ReadAllLines(fullName);
-var expected = new string[] { "$1",
-            @">C:\repos\try-samples-main\LINQ",
-            @"?C:\repos\try-samples-main\LINQ\docs",
-            @"?C:\repos\try-samples-main\LINQ\src",
-            @"*C:\repos\try-samples-main\LINQ\readme.md*.md*1489*19.10.2021 3:30:52",
-            "",
-            "$3",
-            @">C:\repos\try-samples-main\LINQ\src",
-            @"*C:\repos\try-samples-main\LINQ\src\LINQ.csproj*.csproj*431*19.10.2021 3:30:52",
-            @"*C:\repos\try-samples-main\LINQ\src\Program.cs*.cs*2900*19.10.2021 3:30:52",
-            "",
-            "$2",
-            @">C:\repos\try-samples-main\LINQ\docs",
-            @"?C:\repos\try-samples-main\LINQ\docs\KindaNewSubdir",
-            @"*C:\repos\try-samples-main\LINQ\docs\KindaNewFile.gif*.gif*2424*03.07.2022 19:48:15",
-            @"*C:\repos\try-samples-main\LINQ\docs\lazy-equation.md*.md*3001*19.10.2021 3:30:52",
-            ""
-            };
-Console.WriteLine(expected == actual);
-*/
-#endregion
-
+if (settings != null)
+{
+    foreach (ConnectionStringSettings cs in settings)
+    {
+        Console.WriteLine(cs.Name);
+        Console.WriteLine(cs.ProviderName);
+        Console.WriteLine(cs.ConnectionString);
+    }
+}
 
 var userPickedDirectory = DirectoryProvider.AskDirectory();
 if (userPickedDirectory == null)
