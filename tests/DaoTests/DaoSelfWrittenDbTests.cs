@@ -11,6 +11,7 @@ namespace DaoTests
 {
     public class DaoSelfWrittenDbTests
     {
+        #region Constructor (DB Initializator)
         [Fact]
         public void ClassConstructor_ValidDirectory_SuccessfulCreation()
         {
@@ -40,6 +41,7 @@ namespace DaoTests
             }
             Assert.Throws<System.IO.DirectoryNotFoundException>(() => _ = new MyFileSystemNodeDaoSelfWrittenDb(wrongDirectory));
         }
+        #endregion
 
         [Fact]
         public void Add_StaticNodes_Succed()

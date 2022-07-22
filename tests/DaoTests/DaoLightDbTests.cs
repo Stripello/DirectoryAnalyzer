@@ -16,14 +16,14 @@ namespace DaoTests
 {
     public class DaoLightDbTests
     {
-        #region Add
+        #region AddTests
         [Fact]
         public void Add_StaticElements_Succed()
         {
             //Arrange
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var directory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName , "TestData");
             var name = "LiteDbForAddingNodes";
-            var fullName = $"{directory}\\{name}.db";
+            var fullName = Path.Combine(directory,name+".db");
             File.Delete(fullName);
             var testDb = new MyFileSystemNodeDaoLightDb(directory,name);
             var dataToAdd = new List<MyFileSystemNode> {
@@ -62,9 +62,9 @@ namespace DaoTests
         public void Add_EmptyNode_Succed()
         {
             //Arrange
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var directory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "TestData");
             var name = "LiteDbForAddingNodes";
-            var fullName = $"{directory}\\{name}.db";
+            var fullName = Path.Combine(directory, name + ".db");
             File.Delete(fullName);
             //ducttape
             using (_ = new LiteDatabase(fullName))
@@ -88,9 +88,9 @@ namespace DaoTests
         public void Add_NullNode_Fail()
         {
             //Arrange
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var directory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "TestData");
             var name = "LiteDbForAddingNodes";
-            var fullName = $"{directory}\\{name}.db";
+            var fullName = Path.Combine(directory, name + ".db");
             File.Delete(fullName);
             //ducttape
             using (_ = new LiteDatabase(fullName))
@@ -105,12 +105,13 @@ namespace DaoTests
         }
         #endregion
 
-        #region Read
+        #region ReadTests
         [Fact]
         public void Read_StaticDb_Succed()
         {
             //Arrange
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+
+            var directory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "TestData");
             var name = "LiteDbForReading";
             var testDb = new MyFileSystemNodeDaoLightDb(directory, name);
             var expected = new List<MyFileSystemNode> {
@@ -136,12 +137,12 @@ namespace DaoTests
         public void Read_NoMatchInDb_Succed()
         {
             //Arrange
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var directory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "TestData");
             var name = "LiteDbForReading";
             var testDb = new MyFileSystemNodeDaoLightDb(directory, name);
 
             //Act
-            var actual = testDb.Read(new List<string> { "/"});
+            var actual = testDb.Read(new List<string> { "/@"});
             var expected = new List<MyFileSystemNode> { };
 
             //Assert
@@ -152,7 +153,7 @@ namespace DaoTests
         public void Read_EmtyInput_Succed()
         {
             //Arrange
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var directory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "TestData");
             var name = "LiteDbForReading";
             var testDb = new MyFileSystemNodeDaoLightDb(directory, name);
 
@@ -168,7 +169,7 @@ namespace DaoTests
         public void Read_NullInput_Succed()
         {
             //Arrange
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var directory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "TestData");
             var name = "LiteDbForReading";
             var testDb = new MyFileSystemNodeDaoLightDb(directory, name);
 
@@ -181,16 +182,15 @@ namespace DaoTests
         }
         #endregion
 
-        #region Update
+        #region UpdateTests
         [Fact]
         public void Update_PresentedInDb_Succed()
         {
             //Arrange
-            var DS = Path.DirectorySeparatorChar.ToString();
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + DS +"TestData";
+            var directory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "TestData");
             var name = "LiteDbForUpdate";
-            var fullNameOriginal = directory + DS + name + ".db";
-            var fullName = directory + DS + name + "Copy.db";
+            var fullNameOriginal = Path.Combine( directory ,name + ".db");
+            var fullName = Path.Combine(directory, name + "Copy.db");
             File.Copy(fullNameOriginal, fullName,true);
             var nodesToUpdate = new MyFileSystemNode();
             var testDb = new MyFileSystemNodeDaoLightDb(directory, name);
@@ -216,11 +216,10 @@ namespace DaoTests
         public void Update_NotPresentedInDb_Succed()
         {
             //Arrange
-            var DS = Path.DirectorySeparatorChar.ToString();
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + DS + "TestData";
+            var directory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "TestData");
             var name = "LiteDbForUpdate";
-            var fullNameOriginal = directory + DS + name + ".db";
-            var fullName = directory + DS + name + "Copy.db";
+            var fullNameOriginal = Path.Combine(directory, name + ".db");
+            var fullName = Path.Combine(directory, name + "Copy.db");
             File.Copy(fullNameOriginal, fullName, true);
             var expected = File.ReadAllBytes(fullName);
             var testDb = new MyFileSystemNodeDaoLightDb(directory, name);
@@ -244,11 +243,10 @@ namespace DaoTests
         public void Update_EmptyData_NoChanges()
         {
             //Arrange
-            var DS = Path.DirectorySeparatorChar.ToString();
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + DS + "TestData";
+            var directory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "TestData");
             var name = "LiteDbForUpdate";
-            var fullNameOriginal = directory + DS + name + ".db";
-            var fullName = directory + DS + name + "Copy.db";
+            var fullNameOriginal = Path.Combine(directory, name + ".db");
+            var fullName = Path.Combine(directory, name + "Copy.db");
             File.Copy(fullNameOriginal, fullName, true);
             var expected = File.ReadAllBytes(fullName);
             var testDb = new MyFileSystemNodeDaoLightDb(directory, name);
@@ -266,11 +264,10 @@ namespace DaoTests
         public void Update_NullData_Exception()
         {
             //Arrange
-            var DS = Path.DirectorySeparatorChar.ToString();
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + DS + "TestData";
+            var directory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "TestData");
             var name = "LiteDbForUpdate";
-            var fullNameOriginal = directory + DS + name + ".db";
-            var fullName = directory + DS + name + "Copy.db";
+            var fullNameOriginal = Path.Combine(directory, name + ".db");
+            var fullName = Path.Combine(directory, name + "Copy.db");
             File.Copy(fullNameOriginal, fullName, true);
             var expected = File.ReadAllBytes(fullName);
             var testDb = new MyFileSystemNodeDaoLightDb(directory, name);
