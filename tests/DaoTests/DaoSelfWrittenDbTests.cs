@@ -16,9 +16,9 @@ namespace DaoTests
         public void ClassConstructor_ValidDirectory_SuccessfulCreation()
         {
             //Arrange
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var directory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName , "TestData");
             var name = "TestSelfWrittenDb";
-            var fullName = directory + "\\" + name + ".txt";
+            var fullName = Path.Combine(directory,name+".txt");
             File.Delete(fullName);
 
             //Act
@@ -32,7 +32,7 @@ namespace DaoTests
         [Fact]
         public void ClassConstructor_InvalidDirectory_Exception()
         {
-            var realDirectory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var realDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "TestData");
             var wrongDirectory = realDirectory + @"\\";
             var randomizer = new Random();
             while (Directory.Exists(wrongDirectory))
@@ -43,13 +43,14 @@ namespace DaoTests
         }
         #endregion
 
+        #region AddTests
         [Fact]
         public void Add_StaticNodes_Succed()
         {
             //Arrange
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var directory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "TestData");
             var name = "DbForAddingStaticNodes";
-            var fullName = directory + "\\" + name + ".txt";
+            var fullName = Path.Combine(directory, name + ".txt");
             File.Delete(fullName);
             var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
             var data = new List<MyFileSystemNode>();
@@ -103,9 +104,9 @@ namespace DaoTests
         [Fact]
         public void Add_NullNode_Fail()
         {
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var directory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "TestData");
             var name = "DbForNullNodes";
-            var fullName = directory + "\\" + name + ".txt";
+            var fullName = Path.Combine(directory, name + ".txt");
             File.Delete(fullName);
             var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
             var data = new List<MyFileSystemNode>();
@@ -116,22 +117,23 @@ namespace DaoTests
         [Fact]
         public void Add_NullList_Fail()
         {
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
-            var name = "DbForNullList";
-            var fullName = directory + "\\" + name + ".txt";
+            var directory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "TestData");
+            var name = "DbForNullNodes";
+            var fullName = Path.Combine(directory, name + ".txt");
             File.Delete(fullName);
             var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
             List<MyFileSystemNode> data = null;
             Assert.Throws<NullReferenceException>(() => myDb.Add(data));
         }
+        #endregion
 
+        #region ReadTests
         [Fact]
         public void Read_StaticData_Succed()
         {
             //Arrange
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var directory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "TestData");
             var name = "DbForReadingStaticNodes";
-            var fullName = directory + "\\" + name + ".txt";
 
             //Act
             var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
@@ -153,7 +155,7 @@ namespace DaoTests
         public void Read_ArrayOfNulls_Succed()
         {
             //Arrange
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var directory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "TestData");
             var name = "DbForReadingStaticNodes";
             var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
             var arrayOfNulls = new List<string>() { null, null, null };
@@ -169,19 +171,22 @@ namespace DaoTests
         [Fact]
         public void Read_NullArray_Fail()
         {
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var directory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "TestData");
             var name = "DbForReadingStaticNodes";
             var myDb = new MyFileSystemNodeDaoSelfWrittenDb(directory, name);
 
             Assert.Throws<ArgumentNullException>(() => myDb.Read(null));
         }
+        #endregion
+
+        #region UpdateTests
         [Fact]
         public void Update_StaticData_Succed()
         {
             //Arrange
-            var directory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent + "\\TestData";
+            var directory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "TestData");
             var name = "DbForUpdate";
-            var fullName = directory + "\\" + name + ".txt";
+            var fullName = Path.Combine(directory, name + ".txt");
             File.Delete(fullName);
             var originalDbContent = new List<MyFileSystemNode> {
                 new MyFileSystemNode{Id =1 ,DirectoryName = @"C:\repos\try-samples-main\LINQ",
@@ -232,6 +237,6 @@ namespace DaoTests
             Assert.Equal(expected, actual);
             File.Delete(fullName);
         }
-
+        #endregion
     }
 }
