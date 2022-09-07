@@ -1,0 +1,16 @@
+$1
+>C:\repos\try-samples-main\LINQ
+?C:\repos\try-samples-main\LINQ\docs
+?C:\repos\try-samples-main\LINQ\src
+*C:\repos\try-samples-main\LINQ\readme.md*.md*1489*19.10.2021 3:30:52
+
+$2
+>C:\repos\try-samples-main\LINQ\docs
+*C:\repos\try-samples-main\LINQ\docs\lazy-equation.md*.md*3001*19.10.2021 3:30:52
+*C:\repos\try-samples-main\LINQ\docs\query-syntax.md*.md*2068*19.10.2021 3:30:52
+
+$3
+>C:\repos\try-samples-main\LINQ\src
+*C:\repos\try-samples-main\LINQ\src\LINQ.csproj*.csproj*431*19.10.2021 3:30:52
+*C:\repos\try-samples-main\LINQ\src\Program.cs*.cs*2900*19.10.2021 3:30:52
+

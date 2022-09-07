@@ -1,0 +1,16 @@
+.vs/
+*.bin
+*.obj
+**/packages
+**/obj
+**/bin
+**/Log/log.txt
+**/Log/Meta.txt
+**/Log/Log.txt
+**/MyDB.db
+**/MyDB.txt
+**.db
+!LiteDbForReading.db
+**/MySelfWrittenDb.txt
+**/MyLiteDb.db
+**/MySQLite.db
